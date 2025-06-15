@@ -142,7 +142,7 @@ Full details on the benchmarking methodology and environment are available in `B
 
 # Comparison with existing tools
 
-| Feature | ETLTest | Faker | Great Expectations | Cerberus |
+| Feature | ETLTest | Faker [@Faker2024] | Great Expectations [@GreatExpectations2023] | Cerberus [@Cerberus2024] |
 |---------|---------|-------|-------------------|----------|
 | Schema-driven generation | ✓ | ✗ | ✗ | ✗ |
 | Integrated validation | ✓ | ✗ | ✓ | ✓ |
