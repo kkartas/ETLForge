@@ -1,5 +1,7 @@
 # ETLTest
 
+[![JOSS submission](https://joss.theoj.org/papers/10.21105/joss.01234/status.svg)](https://joss.theoj.org/papers/10.21105/joss.01234)
+
 A Python library for generating synthetic test data and validating ETL outputs. ETLTest provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features
@@ -31,6 +33,11 @@ A Python library for generating synthetic test data and validating ETL outputs. 
 ```bash
 pip install -r requirements.txt
 pip install -e .
+```
+
+You can also install it directly from GitHub:
+```bash
+pip install git+https://github.com/kkartas/etltest.git
 ```
 
 ### Optional Dependencies
@@ -309,33 +316,22 @@ Run with coverage:
 pytest tests/ --cov=etltest --cov-report=html
 ```
 
-## Examples
-
-See the included `schema.yaml` for a comprehensive example schema, or create your own using:
-
-```bash
-etltest create-example-schema my_schema.yaml
-```
-
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run the test suite
-6. Submit a pull request
+Contributions are welcome! Please see the [Contributing Guidelines](CONTRIBUTING.md) for more details.
+
+We adhere to a [Code of Conduct](CODE_OF_CONDUCT.md) for all participants.
+
+## Authors and Citation
+
+This project is developed and maintained by Kyriakos Kartas.
+
+If you use ETLTest in your research, please cite it using the following metadata from [CITATION.cff](CITATION.cff).
 
 ## License
 
-This project is licensed under the MIT License. See LICENSE file for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) file for details.
 
 ## Changelog
 
-### Version 0.1.0
-- Initial release
-- Basic data generation and validation
-- Command-line interface
-- Support for int, float, string, date, and category types
-- Faker integration
-- Comprehensive validation checks 
+See [CHANGELOG.md](CHANGELOG.md) for a history of changes. 

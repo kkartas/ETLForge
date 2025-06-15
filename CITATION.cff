@@ -8,8 +8,9 @@ url: "https://github.com/kkartas/etltest"
 repository-code: "https://github.com/kkartas/etltest"
 license: MIT
 authors:
-  - family-names: "ETLTest Development Team"
-    given-names: ""
+  - family-names: "Kartas"
+    given-names: "Kyriakos"
+    email: "mail@kkartas.gr"
 keywords:
   - Python
   - ETL
@@ -29,8 +30,9 @@ preferred-citation:
   type: article
   title: "ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
   authors:
-    - family-names: "ETLTest Development Team"
-      given-names: ""
+    - family-names: "Kartas"
+      given-names: "Kyriakos"
+      email: "mail@kkartas.gr"
   journal: "Journal of Open Source Software"
   year: 2025
   volume: TBD

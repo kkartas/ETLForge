@@ -352,7 +352,7 @@ feat: add support for UUID data type
 
 - **GitHub Issues**: For bugs and feature requests
 - **GitHub Discussions**: For questions and general discussion
-- **Email**: [maintainer-email] for private matters
+- **Email**: mail@kkartas.gr for private matters
 
 ## Recognition
 

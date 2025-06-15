@@ -1,0 +1,65 @@
+# Schema for performance benchmarking.
+# This schema removes tight `unique` constraints to allow for
+# testing performance on a large number of rows.
+
+fields:
+  - name: id
+    type: int
+    # The 'unique' constraint is removed to allow for large-scale generation.
+    nullable: false
+    range:
+      min: 1
+      max: 10000000
+
+  - name: name
+    type: string
+    nullable: false
+    faker_template: name
+
+  - name: email
+    type: string
+    nullable: false
+    # 'unique' is removed.
+    faker_template: email
+
+  - name: age
+    type: int
+    nullable: false
+    range:
+      min: 18
+      max: 80
+
+  - name: salary
+    type: float
+    nullable: true
+    range:
+      min: 30000.0
+      max: 150000.0
+    precision: 2
+    null_rate: 0.05
+
+  - name: department
+    type: category
+    nullable: false
+    values:
+      - Engineering
+      - Marketing
+      - Sales
+      - HR
+      - Finance
+
+  - name: hire_date
+    type: date
+    nullable: false
+    range:
+      start: '2020-01-01'
+      end: '2024-12-31'
+    format: '%Y-%m-%d'
+
+  - name: notes
+    type: string
+    nullable: true
+    length:
+      min: 10
+      max: 100
+    null_rate: 0.3 

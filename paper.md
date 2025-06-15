@@ -9,12 +9,13 @@ tags:
   - testing
   - data engineering
 authors:
-  - name: ETLTest Development Team
+  - name: Kyriakos Kartas
+    orcid: 0009-0001-6477-4676
     affiliation: 1
 affiliations:
  - name: Independent Developer
    index: 1
-date: 13 December 2024
+date: 15 June 2025
 bibliography: paper.bib
 ---
 
@@ -127,16 +128,17 @@ etltest check --input pipeline_output.csv --schema schema.yaml --report errors.c
 
 The framework follows Python packaging standards and is installable via pip, making it accessible to the broader Python data science ecosystem.
 
-# Performance and scalability
+# Performance
 
-`ETLTest` is designed for practical use with real-world datasets:
+To validate the framework's scalability, we performed a benchmark on a standard developer machine (Windows 10, Intel i7, 32 GB RAM) using the `benchmark.py` script included in the repository. The benchmark measures the time to generate and subsequently validate datasets of increasing size. The results demonstrate that `ETLTest` scales linearly for both core operations.
 
-- **Memory efficiency**: Streaming data generation for large datasets
-- **Performance**: Vectorized operations using pandas and NumPy
-- **Scalability**: Linear scaling with dataset size
-- **Format support**: CSV and Excel formats for broad compatibility
+| Rows        | Generation Time (s) | Validation Time (s) |
+|-------------|-----------------------|-----------------------|
+| 10,000      | 1.18                  | 0.06                  |
+| 100,000     | 12.63                 | 0.48                  |
+| 1,000,000   | 189.05                | 4.70                  |
 
-Benchmarking shows the framework can generate millions of records with complex constraints in minutes on standard hardware, making it suitable for both development testing and large-scale validation scenarios.
+Full details on the benchmarking methodology and environment are available in `BENCHMARKS.md`. This performance makes the framework suitable for both rapid development testing and large-scale data validation scenarios.
 
 # Comparison with existing tools
 
