@@ -1,7 +1,5 @@
 # ETLTest
 
-[![JOSS submission](https://joss.theoj.org/papers/10.21105/joss.01234/status.svg)](https://joss.theoj.org/papers/10.21105/joss.01234)
-
 A Python library for generating synthetic test data and validating ETL outputs. ETLTest provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features

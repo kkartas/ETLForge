@@ -45,6 +45,7 @@ setup(
             "black>=21.0.0",
             "flake8>=3.8.0",
             "mypy>=0.900",
+            "matplotlib>=3.5.0",
         ],
     },
     entry_points={
