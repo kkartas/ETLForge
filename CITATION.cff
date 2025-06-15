@@ -1,0 +1,59 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
+version: 0.1.0
+date-released: 2024-12-13
+url: "https://github.com/yourusername/etltest"
+repository-code: "https://github.com/yourusername/etltest"
+license: MIT
+authors:
+  - family-names: "ETLTest Development Team"
+    given-names: ""
+keywords:
+  - Python
+  - ETL
+  - data validation
+  - synthetic data
+  - data quality
+  - testing
+  - data engineering
+abstract: >-
+  ETLTest is a comprehensive Python framework for synthetic test data 
+  generation and automated ETL output validation. The framework enables 
+  data engineers and scientists to create realistic test datasets based 
+  on declarative schema definitions and automatically validate data 
+  quality against those schemas, significantly improving the reliability 
+  and maintainability of ETL pipelines.
+preferred-citation:
+  type: article
+  title: "ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
+  authors:
+    - family-names: "ETLTest Development Team"
+      given-names: ""
+  journal: "Journal of Open Source Software"
+  year: 2024
+  volume: TBD
+  issue: TBD
+  start: TBD
+  end: TBD
+  doi: "TBD"
+  url: "https://github.com/yourusername/etltest"
+references:
+  - type: software
+    title: "pandas: powerful Python data analysis toolkit"
+    authors:
+      - family-names: "McKinney"
+        given-names: "Wes"
+    url: "https://pandas.pydata.org/"
+  - type: software
+    title: "NumPy: The fundamental package for scientific computing with Python"
+    authors:
+      - family-names: "Harris"
+        given-names: "Charles R."
+    url: "https://numpy.org/"
+  - type: software
+    title: "PyYAML: YAML parser and emitter for Python"
+    authors:
+      - family-names: "PyYAML Contributors"
+    url: "https://pyyaml.org/" 
