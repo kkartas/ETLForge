@@ -5,12 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2025-06-15
+
+### Changed
+- **BREAKING**: Migrated packaging to `pyproject.toml` from `setup.py`.
+- Updated project version to `1.0.0` for stable release.
+- Revised `paper.md` with a more rigorous "Statement of Need" and added new citations.
+- Improved user-facing error handling to be more informative.
+- Added comprehensive docstrings to all public methods.
+- Added placeholder badges for build status, coverage, and license to `README.md`.
+- Set up Sphinx for HTML documentation generation.
 
 ### Added
-- JOSS submission preparation including `paper.md`, `CITATION.cff`, and `LICENSE`.
-- `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` for community guidelines.
-- This `CHANGELOG.md` file.
+- `pyproject.toml` for modern Python packaging.
+- `pandera` and `Great Expectations` citations to `paper.bib`.
+- Sphinx configuration (`docs/`) and `.readthedocs.yaml` for automated documentation builds.
+- More tests for failure conditions to increase coverage.
 
 ## [0.1.0] - 2024-12-13
 

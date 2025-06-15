@@ -1,1 +1,13 @@
 /.pytest_cache
+
+# Benchmarks
+/benchmark_results.csv
+/benchmark_plot.png
+
+# Documentation
+/docs/build/
+/docs/source/api.rst
+
+# Coverage
+/coverage.xml
+/.coverage

@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 from typing import Dict, Any, List, Union, Tuple
 from pathlib import Path
+from . import ETLTestError
 
 
 class ValidationResult:
@@ -43,59 +44,90 @@ class ValidationResult:
 
 
 class DataValidator:
-    """Validate CSV/Excel files against schema definitions."""
+    """
+    Validates tabular data against a declarative schema.
+
+    This class reads a schema and a data file (CSV or Excel), and then
+    performs a series of validation checks to ensure the data conforms to the
+    schema's specifications.
+    """
     
     def __init__(self, schema_path: Union[str, Path, dict] = None):
         """
-        Initialize the DataValidator.
-        
+        Initializes the DataValidator.
+
         Args:
-            schema_path: Path to schema file (YAML/JSON) or dict with schema definition
+            schema_path: The path to a YAML/JSON schema file or a dictionary
+                containing the schema definition.
+
+        Raises:
+            ETLTestError: If the schema file cannot be found or parsed.
         """
-        self.schema = None
+        self.schema: Dict[str, Any] = {}
         
         if schema_path:
             self.load_schema(schema_path)
     
     def load_schema(self, schema_path: Union[str, Path, dict]):
         """
-        Load schema from file or dict.
-        
+        Loads a schema from a file path or a dictionary.
+
         Args:
-            schema_path: Path to schema file or dict with schema
+            schema_path: The path to a YAML/JSON schema file or a dictionary
+                containing the schema definition.
+
+        Raises:
+            ETLTestError: If the schema file is not found, has an unsupported
+                format, or cannot be parsed.
         """
         if isinstance(schema_path, dict):
             self.schema = schema_path
-        else:
-            schema_path = Path(schema_path)
-            
-            if schema_path.suffix.lower() in ['.yaml', '.yml']:
-                with open(schema_path, 'r', encoding='utf-8') as file:
+            return
+
+        schema_path_obj = Path(schema_path)
+        if not schema_path_obj.exists():
+            raise ETLTestError(f"Schema file not found at: {schema_path}")
+
+        suffix = schema_path_obj.suffix.lower()
+        try:
+            with open(schema_path_obj, 'r', encoding='utf-8') as file:
+                if suffix in ['.yaml', '.yml']:
                     self.schema = yaml.safe_load(file)
-            elif schema_path.suffix.lower() == '.json':
-                with open(schema_path, 'r', encoding='utf-8') as file:
+                elif suffix == '.json':
                     self.schema = json.load(file)
-            else:
-                raise ValueError(f"Unsupported schema file format: {schema_path.suffix}")
+                else:
+                    raise ETLTestError(f"Unsupported schema file format: {suffix}")
+        except (IOError, yaml.YAMLError, json.JSONDecodeError) as e:
+            raise ETLTestError(f"Failed to load or parse schema file: {e}") from e
     
     def load_data(self, data_path: Union[str, Path]) -> pd.DataFrame:
         """
-        Load data from CSV or Excel file.
-        
+        Loads data from a CSV or Excel file into a pandas DataFrame.
+
         Args:
-            data_path: Path to data file
-            
+            data_path: The path to the data file.
+
         Returns:
-            pd.DataFrame: Loaded data
+            A pandas DataFrame containing the loaded data.
+
+        Raises:
+            ETLTestError: If the data file is not found, has an unsupported
+                format, or cannot be parsed by pandas.
         """
-        data_path = Path(data_path)
+        data_path_obj = Path(data_path)
+        if not data_path_obj.exists():
+            raise ETLTestError(f"Data file not found at: {data_path}")
         
-        if data_path.suffix.lower() == '.csv':
-            return pd.read_csv(data_path)
-        elif data_path.suffix.lower() in ['.xlsx', '.xls']:
-            return pd.read_excel(data_path)
-        else:
-            raise ValueError(f"Unsupported data file format: {data_path.suffix}")
+        suffix = data_path_obj.suffix.lower()
+        try:
+            if suffix == '.csv':
+                return pd.read_csv(data_path_obj)
+            elif suffix in ['.xlsx', '.xls']:
+                return pd.read_excel(data_path_obj)
+            else:
+                raise ETLTestError(f"Unsupported data file format: {suffix}")
+        except (IOError, PermissionError, ValueError) as e:
+            raise ETLTestError(f"Failed to load data from {data_path}: {e}") from e
     
     def _validate_column_existence(self, df: pd.DataFrame, result: ValidationResult):
         """Validate that all required columns exist."""
@@ -214,16 +246,24 @@ class DataValidator:
     
     def validate(self, data_path: Union[str, Path, pd.DataFrame]) -> ValidationResult:
         """
-        Validate data against the loaded schema.
-        
+        Validates data against the loaded schema.
+
+        This is the main validation method. It loads the data (if a path is
+        provided) and runs all configured validation checks.
+
         Args:
-            data_path: Path to data file or DataFrame
-            
+            data_path: The path to the data file (CSV/Excel) or a pandas
+                DataFrame that is already loaded.
+
         Returns:
-            ValidationResult: Validation results
+            A `ValidationResult` object containing the detailed results of
+            the validation run.
+
+        Raises:
+            ETLTestError: If no schema has been loaded.
         """
         if not self.schema:
-            raise ValueError("No schema loaded. Use load_schema() first.")
+            raise ETLTestError("No schema loaded. Use load_schema() first.")
         
         if isinstance(data_path, pd.DataFrame):
             df = data_path
@@ -248,14 +288,19 @@ class DataValidator:
     def validate_and_report(self, data_path: Union[str, Path, pd.DataFrame], 
                           report_path: Union[str, Path] = None) -> ValidationResult:
         """
-        Validate data and optionally save invalid rows to a report file.
-        
+        Validates data and optionally saves a report of invalid rows.
+
         Args:
-            data_path: Path to data file or DataFrame
-            report_path: Path to save report of invalid rows
-            
+            data_path: The path to the data file (CSV/Excel) or a pandas
+                DataFrame that is already loaded.
+            report_path: The destination file path for the invalid rows report.
+                If None, no report is saved.
+
         Returns:
-            ValidationResult: Validation results
+            A `ValidationResult` object containing the detailed results.
+        
+        Raises:
+            ETLTestError: If an error occurs while writing the report file.
         """
         result = self.validate(data_path)
         
@@ -278,13 +323,16 @@ class DataValidator:
             invalid_df['validation_errors'] = error_details
             
             # Save report
-            report_path = Path(report_path)
-            if report_path.suffix.lower() == '.csv':
-                invalid_df.to_csv(report_path, index=True)
-            elif report_path.suffix.lower() in ['.xlsx', '.xls']:
-                invalid_df.to_excel(report_path, index=True)
-            else:
-                invalid_df.to_csv(report_path, index=True)
+            report_path_obj = Path(report_path)
+            try:
+                if report_path_obj.suffix.lower() == '.csv':
+                    invalid_df.to_csv(report_path_obj, index=True)
+                elif report_path_obj.suffix.lower() in ['.xlsx', '.xls']:
+                    invalid_df.to_excel(report_path_obj, index=True)
+                else:
+                    invalid_df.to_csv(report_path_obj, index=True)
+            except (IOError, PermissionError) as e:
+                raise ETLTestError(f"Failed to save validation report to {report_path}: {e}") from e
         
         return result
     

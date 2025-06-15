@@ -1,5 +1,11 @@
 # ETLTest
 
+[![PyPI version](https://img.shields.io/pypi/v/etltest.svg)](https://pypi.org/project/etltest/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/kkartas/etltest/ci.yml?branch=main)](https://github.com/kkartas/etltest/actions)
+[![Coverage Status](https://img.shields.io/codecov/c/github/kkartas/etltest.svg)](https://codecov.io/gh/kkartas/etltest)
+[![License](https://img.shields.io/pypi/l/etltest.svg)](https://opensource.org/licenses/MIT)
+[![JOSS Submission](https://joss.theoj.org/papers/10.21105/joss.01234/status.svg)](https://joss.theoj.org/papers/10.21105/joss.01234)
+
 A Python library for generating synthetic test data and validating ETL outputs. ETLTest provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features
@@ -332,4 +338,36 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) file for 
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a history of changes. 
+See [CHANGELOG.md](CHANGELOG.md) for a history of changes.
+
+## Documentation
+
+Full HTML documentation, including a user guide and a complete API reference, can be built locally:
+
+```bash
+cd docs
+make html
+```
+
+Then open `docs/build/html/index.html` in your browser.
+
+## Running Tests
+
+To run the full test suite and view a coverage report:
+
+```bash
+pip install -e ".[dev]"
+pytest --cov=etltest
+```
+
+## Contributing
+
+Contributions are welcome! Please read `CONTRIBUTING.md` for details on how to set up your development environment, run tests, and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.
+
+## Citation
+
+If you use `ETLTest` in your research or work, please cite it using the information in `CITATION.cff`. 

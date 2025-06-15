@@ -11,6 +11,7 @@ import random
 import string
 from typing import Dict, Any, List, Union
 from pathlib import Path
+from . import ETLTestError
 
 try:
     from faker import Faker
@@ -20,41 +21,61 @@ except ImportError:
 
 
 class DataGenerator:
-    """Generate synthetic test data based on schema definitions."""
+    """
+    Generates synthetic test data based on a declarative schema.
+
+    This class reads a YAML or JSON schema, generates data according to the
+    specified types and constraints, and can save the output to CSV or Excel.
+    """
     
     def __init__(self, schema_path: Union[str, Path, dict] = None):
         """
-        Initialize the DataGenerator.
-        
+        Initializes the DataGenerator.
+
         Args:
-            schema_path: Path to schema file (YAML/JSON) or dict with schema definition
+            schema_path: The path to a YAML/JSON schema file or a dictionary
+                containing the schema definition.
+
+        Raises:
+            ETLTestError: If the schema file cannot be found or parsed.
         """
         self.faker = Faker() if FAKER_AVAILABLE else None
-        self.schema = None
+        self.schema: Dict[str, Any] = {}
         
         if schema_path:
             self.load_schema(schema_path)
     
     def load_schema(self, schema_path: Union[str, Path, dict]):
         """
-        Load schema from file or dict.
-        
+        Loads a schema from a file path or a dictionary.
+
         Args:
-            schema_path: Path to schema file or dict with schema
+            schema_path: The path to a YAML/JSON schema file or a dictionary
+                containing the schema definition.
+
+        Raises:
+            ETLTestError: If the schema file is not found, has an unsupported
+                format, or cannot be parsed.
         """
         if isinstance(schema_path, dict):
             self.schema = schema_path
-        else:
-            schema_path = Path(schema_path)
-            
-            if schema_path.suffix.lower() in ['.yaml', '.yml']:
-                with open(schema_path, 'r', encoding='utf-8') as file:
+            return
+
+        schema_path_obj = Path(schema_path)
+        if not schema_path_obj.exists():
+            raise ETLTestError(f"Schema file not found at: {schema_path}")
+
+        suffix = schema_path_obj.suffix.lower()
+        try:
+            with open(schema_path_obj, 'r', encoding='utf-8') as file:
+                if suffix in ['.yaml', '.yml']:
                     self.schema = yaml.safe_load(file)
-            elif schema_path.suffix.lower() == '.json':
-                with open(schema_path, 'r', encoding='utf-8') as file:
+                elif suffix == '.json':
                     self.schema = json.load(file)
-            else:
-                raise ValueError(f"Unsupported schema file format: {schema_path.suffix}")
+                else:
+                    raise ETLTestError(f"Unsupported schema file format: {suffix}")
+        except (IOError, yaml.YAMLError, json.JSONDecodeError) as e:
+            raise ETLTestError(f"Failed to load or parse schema file: {e}") from e
     
     def _generate_int_column(self, field_config: Dict[str, Any], num_rows: int) -> List[Union[int, None]]:
         """Generate integer column data."""
@@ -66,9 +87,11 @@ class DataGenerator:
         
         if unique:
             if max_val - min_val + 1 < num_rows:
-                raise ValueError(f"Cannot generate {num_rows} unique integers in range [{min_val}, {max_val}]")
-            values = list(range(min_val, min_val + num_rows))
-            random.shuffle(values)
+                raise ETLTestError(f"Cannot generate {num_rows} unique integers for column '{field_config['name']}' in range [{min_val}, {max_val}]")
+            # This is inefficient for large ranges, but sufficient for this implementation.
+            # A more robust solution might use random sampling without replacement.
+            pool = list(range(min_val, max_val + 1))
+            values = random.sample(pool, num_rows)
         else:
             values = [random.randint(min_val, max_val) for _ in range(num_rows)]
         
@@ -192,16 +215,23 @@ class DataGenerator:
     
     def generate_data(self, num_rows: int) -> pd.DataFrame:
         """
-        Generate synthetic data based on the loaded schema.
-        
+        Generates a pandas DataFrame with synthetic data.
+
+        This is the main method for data generation. It iterates through the
+        fields defined in the schema and generates data for each column.
+
         Args:
-            num_rows: Number of rows to generate
-            
+            num_rows: The number of rows of data to generate.
+
         Returns:
-            pd.DataFrame: Generated data
+            A pandas DataFrame containing the synthetic data.
+
+        Raises:
+            ETLTestError: If no schema has been loaded or if an unsupported
+                field type is encountered in the schema.
         """
         if not self.schema:
-            raise ValueError("No schema loaded. Use load_schema() first.")
+            raise ETLTestError("No schema loaded. Use load_schema() first.")
         
         data = {}
         
@@ -209,53 +239,67 @@ class DataGenerator:
             field_name = field['name']
             field_type = field['type'].lower()
             
-            if field_type == 'int':
-                data[field_name] = self._generate_int_column(field, num_rows)
-            elif field_type == 'float':
-                data[field_name] = self._generate_float_column(field, num_rows)
-            elif field_type == 'string':
-                data[field_name] = self._generate_string_column(field, num_rows)
-            elif field_type == 'date':
-                data[field_name] = self._generate_date_column(field, num_rows)
-            elif field_type == 'category':
-                data[field_name] = self._generate_category_column(field, num_rows)
-            else:
-                raise ValueError(f"Unsupported field type: {field_type}")
+            try:
+                if field_type == 'int':
+                    data[field_name] = self._generate_int_column(field, num_rows)
+                elif field_type == 'float':
+                    data[field_name] = self._generate_float_column(field, num_rows)
+                elif field_type == 'string':
+                    data[field_name] = self._generate_string_column(field, num_rows)
+                elif field_type == 'date':
+                    data[field_name] = self._generate_date_column(field, num_rows)
+                elif field_type == 'category':
+                    data[field_name] = self._generate_category_column(field, num_rows)
+                else:
+                    raise ETLTestError(f"Unsupported field type: '{field_type}' for column '{field_name}'")
+            except ETLTestError:
+                raise  # Re-raise our own exceptions
+            except Exception as e:
+                raise ETLTestError(f"Failed to generate data for column '{field_name}': {e}") from e
         
         return pd.DataFrame(data)
     
     def save_data(self, df: pd.DataFrame, output_path: Union[str, Path], file_format: str = None):
         """
-        Save generated data to file.
-        
+        Saves the generated DataFrame to a file (CSV or Excel).
+
         Args:
-            df: DataFrame to save
-            output_path: Output file path
-            file_format: File format ('csv' or 'excel'). If None, inferred from file extension.
+            df: The pandas DataFrame to save.
+            output_path: The destination file path.
+            file_format: The output format ('csv' or 'excel'). If not provided,
+                it is inferred from the file extension of `output_path`.
+
+        Raises:
+            ETLTestError: If the file format is unsupported or if an error
+                occurs during file writing.
         """
-        output_path = Path(output_path)
+        output_path_obj = Path(output_path)
         
         if file_format is None:
-            file_format = 'excel' if output_path.suffix.lower() in ['.xlsx', '.xls'] else 'csv'
+            file_format = 'excel' if output_path_obj.suffix.lower() in ['.xlsx', '.xls'] else 'csv'
         
-        if file_format.lower() == 'csv':
-            df.to_csv(output_path, index=False)
-        elif file_format.lower() == 'excel':
-            df.to_excel(output_path, index=False)
-        else:
-            raise ValueError(f"Unsupported file format: {file_format}")
+        try:
+            if file_format.lower() == 'csv':
+                df.to_csv(output_path_obj, index=False)
+            elif file_format.lower() == 'excel':
+                df.to_excel(output_path_obj, index=False)
+            else:
+                raise ETLTestError(f"Unsupported file format: {file_format}")
+        except (IOError, PermissionError) as e:
+            raise ETLTestError(f"Failed to save data to {output_path}: {e}") from e
     
-    def generate_and_save(self, num_rows: int, output_path: Union[str, Path], file_format: str = None) -> pd.DataFrame:
+    def generate_and_save(self, num_rows: int, output_path: Union[str, Path], file_format: str = None):
         """
-        Generate data and save to file in one step.
-        
+        Generates data and saves it to a file in a single step.
+
         Args:
-            num_rows: Number of rows to generate
-            output_path: Output file path  
-            file_format: File format ('csv' or 'excel')
-            
+            num_rows: The number of rows of data to generate.
+            output_path: The destination file path.
+            file_format: The output format ('csv' or 'excel'). If not provided,
+                it is inferred from the file extension.
+
         Returns:
-            pd.DataFrame: Generated data
+            The generated pandas DataFrame.
         """
         df = self.generate_data(num_rows)
         self.save_data(df, output_path, file_format)

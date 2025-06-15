@@ -6,10 +6,11 @@ import click
 from pathlib import Path
 from .generator import DataGenerator
 from .validator import DataValidator
+from . import ETLTestError
 
 
 @click.group()
-@click.version_option(version="0.1.0")
+@click.version_option(version="1.0.0", prog_name="etltest")
 def cli():
     """ETLTest - Generate synthetic test data and validate ETL outputs."""
     pass
@@ -36,11 +37,13 @@ def generate(schema, rows, output, format):
         click.echo(f"Saving data to: {output}")
         generator.save_data(df, output, format)
         
-        click.echo(f"✅ Successfully generated {len(df)} rows with {len(df.columns)} columns")
-        click.echo(f"   Columns: {', '.join(df.columns.tolist())}")
+        click.echo(click.style(f"✅ Successfully generated {len(df)} rows.", fg="green"))
         
+    except ETLTestError as e:
+        click.echo(click.style(f"❌ Error: {e}", fg="red"), err=True)
+        raise click.Abort()
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(click.style(f"❌ An unexpected error occurred: {e}", fg="red"), err=True)
         raise click.Abort()
 
 
@@ -83,17 +86,23 @@ def check(input, schema, report, verbose):
                 click.echo(f"   ... and {len(result.errors) - 20} more errors")
         
         if result.is_valid:
-            click.echo("✅ Validation PASSED")
+            click.echo(click.style("✅ Validation PASSED", fg="green"))
         else:
-            click.echo("❌ Validation FAILED")
-            raise click.Abort()
+            click.echo(click.style("❌ Validation FAILED", fg="red"), err=True)
+            # Use exit code 1 to indicate failure, which is more standard for CLI tools
+            # than click.Abort() which prints "Aborted!".
+            ctx = click.get_current_context()
+            ctx.exit(1)
             
+    except ETLTestError as e:
+        click.echo(click.style(f"❌ Error: {e}", fg="red"), err=True)
+        raise click.Abort()
     except Exception as e:
-        click.echo(f"❌ Error: {str(e)}", err=True)
+        click.echo(click.style(f"❌ An unexpected error occurred: {e}", fg="red"), err=True)
         raise click.Abort()
 
 
-@cli.command()
+@cli.command("create-schema")
 @click.argument('schema_path', type=click.Path())
 def create_example_schema(schema_path):
     """Create an example schema file."""
