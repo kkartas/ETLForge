@@ -23,7 +23,7 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/yourusername/etltest.git
+   git clone https://github.com/kkartas/etltest.git
    cd etltest
    ```
 3. **Create a branch** for your changes:

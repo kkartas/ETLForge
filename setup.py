@@ -10,12 +10,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="etltest",
     version="0.1.0",
-    author="ETLTest Development Team",
-    author_email="dev@etltest.com",
+    author="Kyriakos Kartas",
+    author_email="mail@kkartas.gr",
     description="A Python library for generating synthetic test data and validating ETL outputs",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/etltest",
+    url="https://github.com/kkartas/etltest",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
