@@ -1,5 +1,5 @@
 ---
-title: 'ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation'
+title: 'ETLForge: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation'
 tags:
   - Python
   - ETL
@@ -23,7 +23,7 @@ bibliography: paper.bib
 
 Extract, Transform, Load (ETL) pipelines are critical components of modern data infrastructure, responsible for moving and transforming data between systems. However, testing these pipelines presents significant challenges: production data may be sensitive, incomplete, or unavailable during development; generating realistic test datasets manually is time-consuming and error-prone; and validating pipeline outputs against expected schemas requires repetitive manual work [@Kimball2013].
 
-`ETLTest` addresses these challenges by providing a comprehensive Python framework for synthetic test data generation and automated ETL output validation. The framework enables data engineers and scientists to create realistic test datasets based on declarative schema definitions and automatically validate data quality against those schemas, significantly improving the reliability and maintainability of ETL pipelines.
+`ETLForge` addresses these challenges by providing a comprehensive Python framework for synthetic test data generation and automated ETL output validation. The framework enables data engineers and scientists to create realistic test datasets based on declarative schema definitions and automatically validate data quality against those schemas, significantly improving the reliability and maintainability of ETL pipelines.
 
 # Statement of need
 
@@ -39,13 +39,13 @@ Modern data engineering workflows face several critical testing challenges:
 
 Existing solutions typically address only parts of this problem space. Tools like `Faker` [@Faker2024] generate realistic synthetic data but lack schema-driven generation capabilities. Data validation libraries like `Cerberus` [@Cerberus2024] or `Pydantic` [@Pydantic2024] focus on validation but don't provide integrated test data generation. Enterprise ETL tools often include proprietary testing features but lack flexibility and open-source accessibility.
 
-`ETLTest` fills this gap by providing an integrated, open-source solution that combines schema-driven synthetic data generation with comprehensive validation capabilities, specifically designed for ETL pipeline testing workflows.
+`ETLForge` fills this gap by providing an integrated, open-source solution that combines schema-driven synthetic data generation with comprehensive validation capabilities, specifically designed for ETL pipeline testing workflows.
 
 # Core functionality
 
 ## Schema-Driven Data Generation
 
-`ETLTest` uses declarative YAML or JSON schemas to define data structure and constraints:
+`ETLForge` uses declarative YAML or JSON schemas to define data structure and constraints:
 
 ```yaml
 fields:
@@ -78,11 +78,11 @@ The validation engine performs multi-layered checks:
 
 ## Dual Interface Design
 
-`ETLTest` provides both programmatic and command-line interfaces to support different workflow preferences:
+`ETLForge` provides both programmatic and command-line interfaces to support different workflow preferences:
 
 ```python
 # Library usage
-from etltest import DataGenerator, DataValidator
+from etl_forge import DataGenerator, DataValidator
 
 generator = DataGenerator('schema.yaml')
 df = generator.generate_data(10000)
@@ -93,18 +93,19 @@ result = validator.validate('pipeline_output.csv')
 
 ```bash
 # Command-line usage
-etltest generate --schema schema.yaml --rows 10000 --output test_data.csv
-etltest check --input pipeline_output.csv --schema schema.yaml --report errors.csv
+etl-forge generate --schema schema.yaml --rows 10000 --output test_data.csv
+etl-forge check --input pipeline_output.csv --schema schema.yaml --report errors.csv
 ```
 
 # Research applications
 
-`ETLTest` has been designed to support several research and practical applications:
+`ETLForge` has been designed to support several research and practical applications:
 
 ## Data Engineering Research
 - **Pipeline robustness testing**: Generate edge cases and stress test scenarios
 - **Performance benchmarking**: Create datasets of varying sizes and complexity
 - **Algorithm validation**: Test data transformation algorithms with controlled inputs
+- **Migration validation**: Verify data integrity during system migrations
 
 ## Educational Applications
 - **Data engineering curriculum**: Provide students with realistic datasets for learning
@@ -114,11 +115,10 @@ etltest check --input pipeline_output.csv --schema schema.yaml --report errors.c
 ## Industry Applications
 - **Continuous integration**: Automated testing in CI/CD pipelines
 - **Compliance testing**: Validate data handling procedures meet regulatory requirements
-- **Migration validation**: Verify data integrity during system migrations
 
 # Implementation
 
-`ETLTest` is implemented in Python 3.8+ using modern software engineering practices:
+`ETLForge` is implemented in Python 3.8+ using modern software engineering practices:
 
 - **Core dependencies**: pandas for data manipulation, PyYAML for schema parsing, Click for CLI
 - **Optional integrations**: Faker for realistic data generation, openpyxl for Excel support
@@ -130,15 +130,15 @@ The framework follows Python packaging standards and is installable via pip, mak
 
 # Performance
 
-To validate the framework's scalability, we performed a benchmark on a standard developer machine (Windows 10, Intel i7, 32 GB RAM) using the `benchmark.py` and `plot_benchmark.py` scripts included in the repository. The benchmark measures the time to generate and subsequently validate datasets of increasing size. The results, shown below, demonstrate that `ETLTest` scales in a near-linear fashion for both core operations (note the log-log scale of the plot).
+To validate the framework's scalability, we performed a benchmark on a standard developer machine (Windows 10, Intel i7, 32 GB RAM) using the `benchmark.py` and `plot_benchmark.py` scripts included in the repository. The benchmark measures the time to generate and subsequently validate datasets of increasing size. The results, shown below, demonstrate that `ETLForge` scales in a near-linear fashion for both core operations (note the log-log scale of the plot).
 
-![Performance of ETLTest generation and validation tasks.](benchmark_plot.png)
+![Performance of ETLForge generation and validation tasks.](benchmark_plot.png)
 
 Full details on the benchmarking methodology and environment are available in `BENCHMARKS.md`. This performance makes the framework suitable for both rapid development testing and large-scale data validation scenarios.
 
 # Comparison with existing tools
 
-| Feature | ETLTest | Faker [@Faker2024] | Great Expectations [@GreatExpectations2023] | Cerberus [@Cerberus2024] |
+| Feature | ETLForge | Faker [@Faker2024] | Great Expectations [@GreatExpectations2023] | Cerberus [@Cerberus2024] |
 |---------|---------|-------|-------------------|----------|
 | Schema-driven generation | ✓ | ✗ | ✗ | ✗ |
 | Integrated validation | ✓ | ✗ | ✓ | ✓ |
@@ -147,7 +147,7 @@ Full details on the benchmarking methodology and environment are available in `B
 | Lightweight deployment | ✓ | ✓ | ✗ | ✓ |
 | Open source | ✓ | ✓ | ✓ | ✓ |
 
-`ETLTest` uniquely combines generation and validation in a single, lightweight framework specifically designed for ETL testing workflows.
+`ETLForge` uniquely combines generation and validation in a single, lightweight framework specifically designed for ETL testing workflows.
 
 # Future development
 
@@ -161,7 +161,7 @@ Planned enhancements include:
 
 # Conclusion
 
-`ETLTest` provides a comprehensive, open-source solution for synthetic test data generation and ETL pipeline validation. By combining schema-driven data generation with automated validation in a single framework, it addresses key challenges in modern data engineering workflows. The tool's design prioritizes ease of use, integration with existing workflows, and extensibility, making it valuable for both research and industry applications.
+`ETLForge` provides a comprehensive, open-source solution for synthetic test data generation and ETL pipeline validation. By combining schema-driven data generation with automated validation in a single framework, it addresses key challenges in modern data engineering workflows. The tool's design prioritizes ease of use, integration with existing workflows, and extensibility, making it valuable for both research and industry applications.
 
 The framework's open-source nature and comprehensive documentation lower the barrier to entry for robust ETL testing practices, potentially improving data quality and pipeline reliability across the data engineering community.
 

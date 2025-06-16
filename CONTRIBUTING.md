@@ -1,6 +1,6 @@
-# Contributing to ETLTest
+# Contributing to ETLForge
 
-We welcome contributions to ETLTest! This document provides guidelines and information about contributing to the project.
+We welcome contributions to ETLForge! This document provides guidelines and information about contributing to the project.
 
 ## Table of Contents
 
@@ -23,8 +23,8 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/kkartas/etltest.git
-   cd etltest
+   git clone https://github.com/kkartas/etl-forge.git
+   cd etl-forge
    ```
 3. **Create a branch** for your changes:
    ```bash
@@ -99,16 +99,16 @@ Before submitting, ensure your code passes:
 
 ```bash
 # Code formatting
-black etltest/ tests/
+black etl_forge/ tests/
 
 # Linting
-flake8 etltest/ tests/
+flake8 etl_forge/ tests/
 
 # Type checking (optional but recommended)
-mypy etltest/
+mypy etl_forge/
 
 # Tests
-pytest tests/ --cov=etltest
+pytest tests/ --cov=etl_forge
 ```
 
 ### Naming Conventions
@@ -156,7 +156,7 @@ class TestYourFeature:
 pytest tests/
 
 # Run with coverage
-pytest tests/ --cov=etltest --cov-report=html
+pytest tests/ --cov=etl_forge --cov-report=html
 
 # Run specific test file
 pytest tests/test_generator.py
@@ -277,7 +277,7 @@ What you expected to happen
 What actually happened
 
 **Environment:**
-- ETLTest version:
+- ETLForge version:
 - Python version:
 - Operating System:
 - Dependencies versions:
@@ -305,7 +305,7 @@ Issues are labeled by priority:
 
 1. **Keep your fork updated:**
    ```bash
-   git remote add upstream https://github.com/original/etltest.git
+   git remote add upstream https://github.com/original/etl-forge.git
    git fetch upstream
    git checkout main
    git merge upstream/main
@@ -361,4 +361,4 @@ Contributors are recognized in:
 - CHANGELOG.md for significant contributions
 - Documentation acknowledgments
 
-Thank you for contributing to ETLTest! 
+Thank you for contributing to ETLForge! 

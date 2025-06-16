@@ -1,12 +1,12 @@
-# ETLTest
+# ETLForge
 
-[![PyPI version](https://img.shields.io/pypi/v/etltest.svg)](https://pypi.org/project/etltest/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/kkartas/etltest/ci.yml?branch=main)](https://github.com/kkartas/etltest/actions)
-[![Coverage Status](https://img.shields.io/codecov/c/github/kkartas/etltest.svg)](https://codecov.io/gh/kkartas/etltest)
-[![License](https://img.shields.io/pypi/l/etltest.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://img.shields.io/pypi/v/etl-forge.svg)](https://pypi.org/project/etl-forge/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/kkartas/etl-forge/ci.yml?branch=main)](https://github.com/kkartas/etl-forge/actions)
+[![Coverage Status](https://img.shields.io/codecov/c/github/kkartas/etl-forge.svg)](https://codecov.io/gh/kkartas/etl-forge)
+[![License](https://img.shields.io/pypi/l/etl-forge.svg)](https://opensource.org/licenses/MIT)
 [![JOSS Submission](https://joss.theoj.org/papers/10.21105/joss.01234/status.svg)](https://joss.theoj.org/papers/10.21105/joss.01234)
 
-A Python library for generating synthetic test data and validating ETL outputs. ETLTest provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
+A Python library for generating synthetic test data and validating ETL outputs. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features
 
@@ -41,7 +41,7 @@ pip install -e .
 
 You can also install it directly from GitHub:
 ```bash
-pip install git+https://github.com/kkartas/etltest.git
+pip install git+https://github.com/kkartas/etl-forge.git
 ```
 
 ### Optional Dependencies
@@ -85,12 +85,12 @@ fields:
 
 **Command Line:**
 ```bash
-etltest generate --schema schema.yaml --rows 500 --output sample.csv
+etl-forge generate --schema schema.yaml --rows 500 --output sample.csv
 ```
 
 **Python Library:**
 ```python
-from etltest import DataGenerator
+from etl_forge import DataGenerator
 
 generator = DataGenerator('schema.yaml')
 df = generator.generate_data(500)
@@ -101,12 +101,12 @@ generator.save_data(df, 'sample.csv')
 
 **Command Line:**
 ```bash
-etltest check --input sample.csv --schema schema.yaml --report invalid_rows.csv
+etl-forge check --input sample.csv --schema schema.yaml --report invalid_rows.csv
 ```
 
 **Python Library:**
 ```python
-from etltest import DataValidator
+from etl_forge import DataValidator
 
 validator = DataValidator('schema.yaml')
 result = validator.validate('sample.csv')
@@ -190,7 +190,7 @@ print(f"Validation passed: {result.is_valid}")
 
 ### Generate Data
 ```bash
-etltest generate [OPTIONS]
+etl-forge generate [OPTIONS]
 
 Options:
   -s, --schema PATH     Path to schema file (YAML or JSON) [required]
@@ -201,7 +201,7 @@ Options:
 
 ### Validate Data
 ```bash
-etltest check [OPTIONS]
+etl-forge check [OPTIONS]
 
 Options:
   -i, --input PATH      Path to input data file [required]
@@ -212,7 +212,7 @@ Options:
 
 ### Create Example Schema
 ```bash
-etltest create-example-schema example_schema.yaml
+etl-forge create-example-schema example_schema.yaml
 ```
 
 ## Library Usage
@@ -220,7 +220,7 @@ etltest create-example-schema example_schema.yaml
 ### Data Generation
 
 ```python
-from etltest import DataGenerator
+from etl_forge import DataGenerator
 
 # Initialize with schema
 generator = DataGenerator('schema.yaml')
@@ -238,7 +238,7 @@ df = generator.generate_and_save(1000, 'output.xlsx', 'excel')
 ### Data Validation
 
 ```python
-from etltest import DataValidator
+from etl_forge import DataValidator
 
 # Initialize validator
 validator = DataValidator('schema.yaml')
@@ -317,7 +317,7 @@ pytest tests/
 Run with coverage:
 
 ```bash
-pytest tests/ --cov=etltest --cov-report=html
+pytest tests/ --cov=etl_forge --cov-report=html
 ```
 
 ## Contributing
@@ -330,7 +330,7 @@ We adhere to a [Code of Conduct](CODE_OF_CONDUCT.md) for all participants.
 
 This project is developed and maintained by Kyriakos Kartas.
 
-If you use ETLTest in your research, please cite it using the following metadata from [CITATION.cff](CITATION.cff).
+If you use ETLForge in your research, please cite it using the following metadata from [CITATION.cff](CITATION.cff).
 
 ## License
 
@@ -357,7 +357,7 @@ To run the full test suite and view a coverage report:
 
 ```bash
 pip install -e ".[dev]"
-pytest --cov=etltest
+pytest --cov=etl_forge
 ```
 
 ## Contributing
@@ -370,4 +370,11 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ## Citation
 
-If you use `ETLTest` in your research or work, please cite it using the information in `CITATION.cff`. 
+If you use `ETLForge` in your research or work, please cite it using the information in `CITATION.cff`.
+
+To run the performance benchmarks, use the following command:
+```bash
+pytest --cov=etl_forge
+```
+
+Then, to visualize the results: 

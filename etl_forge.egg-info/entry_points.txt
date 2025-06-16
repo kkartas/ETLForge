@@ -1,0 +1,2 @@
+[console_scripts]
+etl-forge = etl_forge.cli:cli

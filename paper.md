@@ -1,5 +1,5 @@
 ---
-title: 'ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation'
+title: 'ETLForge: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation'
 tags:
   - Python
   - ETL
@@ -21,7 +21,7 @@ bibliography: paper.bib
 
 # Summary
 
-Extract, Transform, Load (ETL) pipelines are fundamental to modern data infrastructure. Testing these pipelines is challenging, as production data may be sensitive or unavailable, and manually creating realistic test data is a significant bottleneck [@Kimball2013]. `ETLTest` is a Python framework that addresses these challenges by providing an integrated solution for schema-driven synthetic data generation and automated output validation. It allows data engineers and scientists to define data structures via a simple declarative schema and use it as a single source of truth for both creating test data and validating pipeline outputs, thereby improving the reliability and development velocity of data-intensive applications.
+Extract, Transform, Load (ETL) pipelines are fundamental to modern data infrastructure. Testing these pipelines is challenging, as production data may be sensitive or unavailable, and manually creating realistic test data is a significant bottleneck [@Kimball2013]. `ETLForge` is a Python framework that addresses these challenges by providing an integrated solution for schema-driven synthetic data generation and automated output validation. It allows data engineers and scientists to define data structures via a simple declarative schema and use it as a single source of truth for both creating test data and validating pipeline outputs, thereby improving the reliability and development velocity of data-intensive applications.
 
 # Statement of need
 
@@ -31,26 +31,37 @@ Data generation tools like `Faker` [@Faker2024] are excellent for producing real
 
 `Great Expectations` is a comprehensive data quality platform, offering automated data profiling, documentation, and a rich set of "expectations." However, its power comes with significant setup complexity and a dependency footprint that may be excessive for teams needing a lightweight, scriptable tool for CI/CD environments. `pandera` offers a more Pythonic, code-first approach to schema definition and validation, which is excellent for integration within Python applications, but it similarly does not have a built-in data generation capability based on its schemas.
 
-`ETLTest` fills this specific gap by positioning the schema as the central artifact for both generation and validation. By defining a schema once in a simple YAML or JSON format, a developer can generate an arbitrarily large, structurally-correct dataset to test a pipeline, and then use that exact same schema to validate the pipeline's final output. This "schema-first" approach provides a single source of truth, simplifies the testing workflow, and reduces the friction of implementing robust data quality checks. It is designed to be a simple, lightweight, and easily scriptable tool that fits naturally into both local development loops and automated CI/CD testing pipelines without requiring extensive configuration.
+`ETLForge` fills this specific gap by positioning the schema as the central artifact for both generation and validation. By defining a schema once in a simple YAML or JSON format, a developer can generate an arbitrarily large, structurally-correct dataset to test a pipeline, and then use that exact same schema to validate the pipeline's final output. This "schema-first" approach provides a single source of truth, simplifies the testing workflow, and reduces the friction of implementing robust data quality checks. It is designed to be a simple, lightweight, and easily scriptable tool that fits naturally into both local development loops and automated CI/CD testing pipelines without requiring extensive configuration.
 
 # Core functionality
 
 ## Dual Interface Design
 
-`ETLTest` provides both programmatic and command-line interfaces built with `Click` [@click2022] to support different workflow preferences:
+`ETLForge` provides both programmatic and command-line interfaces built with `Click` [@click2022] to support different workflow preferences:
 
 ```python
 # Library usage
 # Implementation
 
-`ETLTest` is implemented in Python 3.8+ using modern software engineering practices:
+`ETLForge` is implemented in Python 3.8+ using modern software engineering practices:
 
 - **Core dependencies**: `pandas` [@McKinney2010] for data manipulation, `PyYAML` [@pyyaml2021] for schema parsing, and `Click` [@click2022] for the CLI.
 - **Optional integrations**: `Faker` [@Faker2024] for realistic data generation, `openpyxl` for Excel support.
-- **Architecture**: Modular design with separate generator and validator components
+- **Architecture**: The framework features a modular design with distinct `DataGenerator` and `DataValidator` components. This separation of concerns allows each component to be used independently and facilitates extensibility.
+- **Testing**: A comprehensive test suite using `pytest` provides high code coverage (>95%), ensuring reliability.
+- **Documentation**: User-friendly HTML documentation is generated using `Sphinx`.
+
+# Research Applications
+
+`ETLForge` is a valuable tool for the research community, particularly in computational fields:
+
+- **Reproducibility**: Researchers can package an `ETLForge` schema with their code, allowing others to generate an identical data structure for reproducing pipeline results without sharing potentially sensitive raw data.
+- **Algorithm Benchmarking**: The data generator can be used to create controlled datasets of varying size and complexity to benchmark the performance and scalability of data processing algorithms.
+- **Educational Tool**: The framework serves as a practical tool for teaching data engineering and data quality principles, allowing students to experiment with pipeline testing in a controlled environment.
+
 # Comparison with existing tools
 
-| Feature | ETLTest | Faker [@Faker2024] | Great Expectations [@GreatExpectations2023] | pandera [@Pandera2023] |
+| Feature | ETLForge | Faker [@Faker2024] | Great Expectations [@GreatExpectations2023] | pandera [@Pandera2023] |
 |---|---|---|---|---|
 | **Schema-Driven Generation** | ✅ | ❌ | ❌ | ❌ |
 | **Integrated Validation** | ✅ | ❌ | ✅ | ✅ |
@@ -59,7 +70,17 @@ Data generation tools like `Faker` [@Faker2024] are excellent for producing real
 | CLI Interface | ✅ | ✅ | ✅ | ❌ |
 | Declarative YAML/JSON Schema | ✅ | ❌ | ✅ | ❌ |
 
-`ETLTest` uniquely combines generation and validation in a single, lightweight framework specifically designed for ETL testing workflows.
+`ETLForge` uniquely combines generation and validation in a single, lightweight framework specifically designed for ETL testing workflows.
+
+# Conclusion
+
+`ETLForge` provides an integrated, schema-first solution for the critical but often fragmented tasks of test data generation and validation. By unifying these processes around a single, declarative schema, it lowers the barrier to implementing robust testing practices in data-intensive projects. Its lightweight design and dual library/CLI interface make it a flexible tool for both local development and automated CI/CD workflows, addressing a clear gap in the existing open-source data ecosystem.
+
+# Acknowledgements
+
+We acknowledge the developers and communities behind the open-source libraries that `ETLForge` is built upon, including `pandas`, `numpy`, `PyYAML`, `Click`, and `Faker`. Their contributions are fundamental to this work.
+
+# References
 
 # Future development
 

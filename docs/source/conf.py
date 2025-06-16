@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
 # -- Project information -----------------------------------------------------
-project = 'ETLTest'
+project = 'ETLForge'
 copyright = '2025, Kyriakos Kartas'
 author = 'Kyriakos Kartas'
 release = '1.0.0'
