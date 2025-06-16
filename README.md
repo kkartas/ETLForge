@@ -1,10 +1,6 @@
 # ETLForge
 
-[![PyPI version](https://img.shields.io/pypi/v/etl-forge.svg)](https://pypi.org/project/etl-forge/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/kkartas/etl-forge/ci.yml?branch=main)](https://github.com/kkartas/etl-forge/actions)
-[![Coverage Status](https://img.shields.io/codecov/c/github/kkartas/etl-forge.svg)](https://codecov.io/gh/kkartas/etl-forge)
-[![License](https://img.shields.io/pypi/l/etl-forge.svg)](https://opensource.org/licenses/MIT)
-[![JOSS Submission](https://joss.theoj.org/papers/10.21105/joss.01234/status.svg)](https://joss.theoj.org/papers/10.21105/joss.01234)
+[![License](https://img.shields.io/pypi/l/etl-forge.svg)](LICENSE)
 
 A Python library for generating synthetic test data and validating ETL outputs. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
