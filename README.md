@@ -1,7 +1,5 @@
 # ETLForge
 
-[![License](https://img.shields.io/pypi/l/etl-forge.svg)](LICENSE)
-
 A Python library for generating synthetic test data and validating ETL outputs. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features
