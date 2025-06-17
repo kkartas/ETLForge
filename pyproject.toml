@@ -40,6 +40,7 @@ dev = [
     "black>=21.0.0",
     "flake8>=3.8.0",
     "mypy>=0.900",
+    "types-PyYAML>=6.0.0",
     "matplotlib>=3.5.0",
     "coverage>=6.0",
     "sphinx>=4.0.0",
