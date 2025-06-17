@@ -4,14 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "etl-forge"
-version = "1.0.0"
+dynamic = ["version"]
 authors = [
   { name="Kyriakos Kartas", email="mail@kkartas.gr" },
 ]
 description = "A Python library for generating synthetic test data and validating ETL outputs."
 readme = "README.md"
 requires-python = ">=3.8"
-license = { file = "LICENSE" }
 keywords = ["etl", "testing", "data validation", "synthetic data", "data quality"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -56,4 +55,8 @@ etl-forge = "etl_forge.cli:cli"
 
 [tool.setuptools]
 packages = ["etl_forge"]
-include-package-data = true 
+include-package-data = true
+license-files = []
+
+[tool.setuptools.dynamic]
+version = {attr = "etl_forge.__version__"} 

@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 title: "ETLForge: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
-version: 1.0.0
+version: 1.0.1
 date-released: 2025-06-15
 url: "https://github.com/kkartas/etl-forge"
 repository-code: "https://github.com/kkartas/etl-forge"

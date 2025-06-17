@@ -3,11 +3,14 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
+# Import version from the package
+from etl_forge import __version__
+
 # -- Project information -----------------------------------------------------
 project = 'ETLForge'
 copyright = '2025, Kyriakos Kartas'
 author = 'Kyriakos Kartas'
-release = '1.0.0'
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 extensions = [

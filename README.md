@@ -1,23 +1,22 @@
 # ETLForge
 
 [![build](https://github.com/kkartas/etl-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/kkartas/etl-forge/actions/workflows/ci.yml)
-[![docs](https://readthedocs.org/projects/etl-forge/badge/?version=latest)](https://etl-forge.readthedocs.io/en/latest/)
+[![docs](https://readthedocs.org/projects/etlforge/badge/?version=latest)](https://etlforge.readthedocs.io/en/latest/)
 [![PyPI version](https://badge.fury.io/py/etl-forge.svg)](https://badge.fury.io/py/etl-forge)
-[![codecov](https://codecov.io/gh/kkartas/etl-forge/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/kkartas/etl-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Python library for generating synthetic test data and validating ETL outputs. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features
 
-### 🎲 Test Data Generator
+### Test Data Generator
 - Generate synthetic data based on YAML/JSON schema definitions
 - Support for multiple data types: `int`, `float`, `string`, `date`, `category`
 - Advanced constraints: ranges, uniqueness, nullable fields, categorical values
 - Integration with Faker for realistic string generation
 - Export to CSV or Excel formats
 
-### ✅ Data Validator
+### Data Validator
 - Validate CSV/Excel files against schema definitions
 - Comprehensive validation checks:
   - Column existence
@@ -28,7 +27,7 @@ A Python library for generating synthetic test data and validating ETL outputs. 
   - Date format validation
 - Generate detailed reports of invalid rows
 
-### 🔧 Dual Interface
+### Dual Interface
 - **Command-line interface** for quick operations
 - **Python library** for integration into existing workflows
 
@@ -78,7 +77,7 @@ etl-forge --version
 python -m etl_forge.cli --version
 
 # Library verification
-python -c "from etl_forge import DataGenerator, DataValidator; print('✅ Installation verified')"
+python -c "from etl_forge import DataGenerator, DataValidator; print('Installation verified')"
 ```
 
 ### CLI Access Note
@@ -304,9 +303,9 @@ result = validator.validate('data.csv')
 
 # Check results
 if result.is_valid:
-    print("✅ Data is valid!")
+    print("Data is valid!")
 else:
-    print(f"❌ Found {len(result.errors)} validation errors")
+    print(f"Found {len(result.errors)} validation errors")
     print(f"Invalid rows: {len(result.invalid_rows)}")
 
 # Generate report
