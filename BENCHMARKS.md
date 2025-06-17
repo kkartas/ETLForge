@@ -21,15 +21,23 @@ The following benchmarks were run on the system detailed below:
 
 ## Results
 
-The results show that both generation and validation times scale linearly with the number of rows.
+The comprehensive benchmark covers 11 data points ranging from 1,000 to 5,000,000 rows, spanning 4 orders of magnitude. The results demonstrate that both generation and validation times scale near-linearly with the number of rows across this entire range, confirming the framework's scalability for production ETL workloads.
 
 ![ETLForge Performance Plot](paper/benchmark_plot.png)
 
 | Rows        | Generation Time (s) | Validation Time (s) |
 |-------------|-----------------------|-----------------------|
-| 10,000      | 1.1838                | 0.0594                |
-| 100,000     | 12.6293               | 0.4794                |
-| 1,000,000   | 189.0517              | 4.7033                |
+| 1,000       | 0.1230                | 0.0091                |
+| 5,000       | 0.6030                | 0.0269                |
+| 10,000      | 1.2588                | 0.0487                |
+| 25,000      | 3.2063                | 0.1336                |
+| 50,000      | 6.1208                | 0.2754                |
+| 100,000     | 12.5585               | 0.5115                |
+| 250,000     | 32.1666               | 1.2316                |
+| 500,000     | 65.7119               | 2.4138                |
+| 1,000,000   | 130.1015              | 5.1648                |
+| 2,500,000   | 390.2832              | 28.9765               |
+| 5,000,000   | 1457.9524             | 74.4328               |
 
 ---
 

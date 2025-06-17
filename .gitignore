@@ -136,13 +136,15 @@ Thumbs.db
 # Project specific
 # Benchmarks
 benchmark_results.csv
-benchmark_plot.png
 
 # Test data
 test_data.csv
 sample_data.csv
 output.csv
 output.xlsx
+customer_test_data.csv
+corrupted_data.csv
+validation_errors.csv
 
 # Temporary files
 tmp/

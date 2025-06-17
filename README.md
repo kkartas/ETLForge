@@ -87,6 +87,50 @@ On some systems (especially Windows), the `etl-forge` command may not be directl
 python -m etl_forge.cli [command] [options]
 ```
 
+## Complete Example
+
+For a comprehensive demonstration of ETLForge's capabilities, see the included [`example.py`](example.py) file:
+
+```bash
+# Run the complete example
+python example.py
+```
+
+This example demonstrates:
+- Schema-driven data generation with realistic data (using Faker)
+- Data validation with the same schema
+- Error detection and reporting
+- Complete ETL testing workflow
+
+**Key snippet from `example.py`:**
+
+```python
+from etl_forge import DataGenerator, DataValidator
+
+# Single schema drives both generation and validation
+schema = {
+    "fields": [
+        {"name": "customer_id", "type": "int", "unique": True, "range": {"min": 1, "max": 10000}},
+        {"name": "name", "type": "string", "faker_template": "name"},
+        {"name": "email", "type": "string", "unique": True, "faker_template": "email"},
+        {"name": "purchase_amount", "type": "float", "range": {"min": 10.0, "max": 5000.0}, "nullable": True},
+        {"name": "customer_tier", "type": "category", "values": ["Bronze", "Silver", "Gold", "Platinum"]}
+    ]
+}
+
+# Generate test data
+generator = DataGenerator(schema)
+df = generator.generate_data(1000)
+generator.save_data(df, 'customer_test_data.csv')
+
+# Validate with the same schema
+validator = DataValidator(schema)
+result = validator.validate('customer_test_data.csv')
+print(f"Validation passed: {result.is_valid}")
+```
+
+This demonstrates ETLForge's key advantage: **single schema, dual purpose** - the same schema definition drives both data generation and validation, ensuring perfect synchronization between test data and validation rules.
+
 ## Quick Start
 
 ### 1. Create a Schema

@@ -4,8 +4,8 @@ type: software
 title: "ETLForge: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
 version: 1.0.1
 date-released: 2025-06-15
-url: "https://github.com/kkartas/etl-forge"
-repository-code: "https://github.com/kkartas/etl-forge"
+url: "https://github.com/kkartas/ETLForge"
+repository-code: "https://github.com/kkartas/ETLForge"
 license: MIT
 authors:
   - family-names: "Kartas"
@@ -42,7 +42,7 @@ preferred-citation:
   start: TBD
   end: TBD
   doi: "TBD"
-  url: "https://github.com/kkartas/etl-forge"
+  url: "https://github.com/kkartas/ETLForge"
 references:
   - type: software
     title: "pandas: powerful Python data analysis toolkit"

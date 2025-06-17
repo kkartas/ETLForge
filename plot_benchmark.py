@@ -11,7 +11,7 @@ import seaborn as sns
 
 # --- Configuration ---
 RESULTS_PATH = 'benchmark_results.csv'
-PLOT_PATH = 'benchmark_plot.png'
+PLOT_PATH = './paper/benchmark_plot.png'
 
 def create_plot(df: pd.DataFrame):
     """Generates and saves a plot from the benchmark data."""

@@ -17,7 +17,19 @@ from etl_forge.validator import DataValidator
 
 # --- Configuration ---
 SCHEMA_PATH = 'benchmark_schema.yaml'
-ROW_COUNTS = [10_000, 100_000, 1_000_000]
+ROW_COUNTS = [
+    1_000,      # 1K - baseline small dataset
+    5_000,      # 5K - small intermediate  
+    10_000,     # 10K - original starting point
+    25_000,     # 25K - better granularity in 10K-100K range
+    50_000,     # 50K - mid-range
+    100_000,    # 100K - original mid point
+    250_000,    # 250K - better coverage before 1M
+    500_000,    # 500K - pre-million scale
+    1_000_000,  # 1M - original endpoint
+    2_500_000,  # 2.5M - test beyond million scale
+    5_000_000,  # 5M - large-scale performance test
+]
 RESULTS_PATH = 'benchmark_results.csv'
 
 def get_system_info():
