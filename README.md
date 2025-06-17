@@ -34,7 +34,7 @@ A Python library for generating synthetic test data and validating ETL outputs. 
 ## Installation
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.9 or higher
 - pip package manager
 
 ### Install from PyPI (Recommended)

@@ -130,7 +130,7 @@ For example, researchers studying distributed data processing algorithms can use
 
 # Implementation
 
-`ETLForge` is implemented in Python 3.8+ using modern software engineering practices:
+`ETLForge` is implemented in Python 3.9+ using modern software engineering practices:
 
 - **Core dependencies**: pandas [@McKinney2010] for data manipulation, NumPy [@Harris2020] for numerical operations, PyYAML [@pyyaml] for schema parsing, and Click [@click2022] for the CLI.
 - **Optional integrations**: Faker [@Faker2024] for realistic data generation, openpyxl for Excel support
