@@ -7,7 +7,7 @@ import numpy as np
 import yaml
 import json
 from datetime import datetime
-from typing import Dict, Any, Union
+from typing import Dict, Any, List, Union, Optional
 from pathlib import Path
 from .exceptions import ETLForgeError
 
@@ -29,7 +29,11 @@ class ValidationResult:
         }
 
     def add_error(
-        self, error_type: str, column: str, row_idx: int = None, message: str = None
+        self,
+        error_type: str,
+        column: str,
+        row_idx: Optional[int] = None,
+        message: Optional[str] = None,
     ):
         """Add a validation error."""
         self.is_valid = False
@@ -45,6 +49,38 @@ class ValidationResult:
             self.invalid_rows.append(row_idx)
 
 
+class ValidationError:
+    """Represents a single validation error."""
+
+    def __init__(
+        self,
+        column: str,
+        error_type: str,
+        row_idx: Optional[int] = None,
+        message: Optional[str] = None,
+    ):
+        """
+        Initialize a validation error.
+
+        Args:
+            column: The column name where the error occurred.
+            error_type: The type of validation error.
+            row_idx: The row index where the error occurred (if applicable).
+            message: A descriptive error message.
+        """
+        self.column = column
+        self.error_type = error_type
+        self.row_idx = row_idx
+        self.message = message
+
+    def __str__(self):
+        """String representation of the validation error."""
+        if self.row_idx is not None:
+            return f"Column '{self.column}', Row {self.row_idx}: {self.error_type} - {self.message}"
+        else:
+            return f"Column '{self.column}': {self.error_type} - {self.message}"
+
+
 class DataValidator:
     """
     Validates tabular data against a declarative schema.
@@ -54,7 +90,7 @@ class DataValidator:
     schema's specifications.
     """
 
-    def __init__(self, schema_path: Union[str, Path, dict] = None):
+    def __init__(self, schema_path: Optional[Union[str, Path, dict]] = None):
         """
         Initializes the DataValidator.
 
@@ -65,7 +101,8 @@ class DataValidator:
         Raises:
             ETLForgeError: If the schema file cannot be found or parsed.
         """
-        self.schema: Dict[str, Any] = None
+        self.schema: Dict[str, Any] = {}
+        self.errors: List[ValidationError] = []
 
         if schema_path:
             self.load_schema(schema_path)
@@ -84,6 +121,7 @@ class DataValidator:
         """
         if isinstance(schema_path, dict):
             self.schema = schema_path
+            self._validate_schema()
             return
 
         schema_path_obj = Path(schema_path)
@@ -94,13 +132,78 @@ class DataValidator:
         try:
             with open(schema_path_obj, "r", encoding="utf-8") as file:
                 if suffix in [".yaml", ".yml"]:
-                    self.schema = yaml.safe_load(file) or {}
+                    loaded_schema = yaml.safe_load(file)
+                    self.schema = loaded_schema if loaded_schema is not None else {}
                 elif suffix == ".json":
-                    self.schema = json.load(file) or {}
+                    loaded_schema = json.load(file)
+                    self.schema = loaded_schema if loaded_schema is not None else {}
                 else:
                     raise ETLForgeError(f"Unsupported schema file format: {suffix}")
         except (IOError, yaml.YAMLError, json.JSONDecodeError) as e:
             raise ETLForgeError(f"Failed to load or parse schema file: {e}") from e
+
+        self._validate_schema()
+
+    def _validate_schema(self):
+        """
+        Validates the loaded schema for correctness and completeness.
+
+        Raises:
+            ETLForgeError: If the schema is invalid.
+        """
+        if not self.schema:
+            raise ETLForgeError("Schema is empty or None")
+
+        if "fields" not in self.schema:
+            raise ETLForgeError("Schema must contain a 'fields' key")
+
+        fields = self.schema["fields"]
+        if not isinstance(fields, list) or len(fields) == 0:
+            raise ETLForgeError("Schema 'fields' must be a non-empty list")
+
+        field_names = set()
+        supported_types = {"int", "float", "string", "date", "category"}
+
+        for i, field in enumerate(fields):
+            if not isinstance(field, dict):
+                raise ETLForgeError(f"Field at index {i} must be a dictionary")
+
+            # Check required fields
+            if "name" not in field:
+                raise ETLForgeError(
+                    f"Field at index {i} is missing required 'name' property"
+                )
+
+            if "type" not in field:
+                raise ETLForgeError(
+                    f"Field '{field.get('name', i)}' is missing required 'type' property"
+                )
+
+            field_name = field["name"]
+            field_type = field["type"]
+
+            # Check for duplicate field names
+            if field_name in field_names:
+                raise ETLForgeError(f"Duplicate field name '{field_name}' found")
+            field_names.add(field_name)
+
+            # Validate field type
+            if field_type not in supported_types:
+                raise ETLForgeError(
+                    f"Field '{field_name}' has unsupported type '{field_type}'. "
+                    f"Supported types: {', '.join(sorted(supported_types))}"
+                )
+
+    def _add_error(
+        self,
+        column: str,
+        error_type: str,
+        row_idx: Optional[int] = None,
+        message: Optional[str] = None,
+    ):
+        """Add a validation error to the errors list."""
+        error = ValidationError(column, error_type, row_idx, message)
+        self.errors.append(error)
 
     def load_data(self, data_path: Union[str, Path]) -> pd.DataFrame:
         """
@@ -347,7 +450,7 @@ class DataValidator:
     def validate_and_report(
         self,
         data_path: Union[str, Path, pd.DataFrame],
-        report_path: Union[str, Path] = None,
+        report_path: Optional[Union[str, Path]] = None,
     ) -> ValidationResult:
         """
         Validates data and optionally saves a report of invalid rows.

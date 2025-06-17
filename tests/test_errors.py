@@ -44,7 +44,7 @@ def test_generator_unique_constraint_impossible():
 
 def test_validator_load_nonexistent_data():
     """Test that DataValidator raises ETLForgeError for a missing data file."""
-    validator = DataValidator({"fields": []})
+    validator = DataValidator({"fields": [{"name": "id", "type": "int"}]})
     with pytest.raises(ETLForgeError, match="Data file not found"):
         validator.load_data("nonexistent_data.csv")
 

@@ -8,7 +8,7 @@ import json
 from datetime import datetime, timedelta
 import random
 import string
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Optional
 from pathlib import Path
 from .exceptions import ETLForgeError
 
@@ -28,7 +28,7 @@ class DataGenerator:
     specified types and constraints, and can save the output to CSV or Excel.
     """
 
-    def __init__(self, schema_path: Union[str, Path, dict] = None):
+    def __init__(self, schema_path: Optional[Union[str, Path, dict]] = None):
         """
         Initializes the DataGenerator.
 
@@ -187,7 +187,7 @@ class DataGenerator:
 
     def _generate_int_column(
         self, field_config: Dict[str, Any], num_rows: int
-    ) -> List[Union[int, None]]:
+    ) -> List[Optional[int]]:
         """Generate integer column data."""
         min_val = field_config.get("range", {}).get("min", 0)
         max_val = field_config.get("range", {}).get("max", 100)
@@ -195,10 +195,13 @@ class DataGenerator:
         unique = field_config.get("unique", False)
         null_rate = field_config.get("null_rate", 0.1) if nullable else 0
 
+        values: List[Optional[int]] = []
+
         if unique:
             if max_val - min_val + 1 < num_rows:
                 raise ETLForgeError(
-                    f"Cannot generate {num_rows} unique integers for column '{field_config['name']}' in range [{min_val}, {max_val}]"
+                    f"Cannot generate {num_rows} unique integers for column "
+                    f"'{field_config['name']}' in range [{min_val}, {max_val}]"
                 )
 
             # Optimized unique integer generation for large ranges
@@ -209,19 +212,19 @@ class DataGenerator:
                 values = random.sample(pool, num_rows)
             else:
                 # For large ranges, use set-based sampling to avoid memory issues
-                values = set()
+                values_set: set[int] = set()
                 max_attempts = num_rows * 10  # Prevent infinite loops
                 attempts = 0
-                while len(values) < num_rows and attempts < max_attempts:
-                    values.add(random.randint(min_val, max_val))
+                while len(values_set) < num_rows and attempts < max_attempts:
+                    values_set.add(random.randint(min_val, max_val))
                     attempts += 1
 
-                if len(values) < num_rows:
+                if len(values_set) < num_rows:
                     raise ETLForgeError(
                         f"Could not generate {num_rows} unique integers for column '{field_config['name']}' "
                         f"after {max_attempts} attempts. Consider expanding the range."
                     )
-                values = list(values)
+                values = list(values_set)
                 random.shuffle(values)
         else:
             values = [random.randint(min_val, max_val) for _ in range(num_rows)]
@@ -237,7 +240,7 @@ class DataGenerator:
 
     def _generate_float_column(
         self, field_config: Dict[str, Any], num_rows: int
-    ) -> List[Union[float, None]]:
+    ) -> List[Optional[float]]:
         """Generate float column data."""
         min_val = field_config.get("range", {}).get("min", 0.0)
         max_val = field_config.get("range", {}).get("max", 100.0)
@@ -245,7 +248,7 @@ class DataGenerator:
         nullable = field_config.get("nullable", False)
         null_rate = field_config.get("null_rate", 0.1) if nullable else 0
 
-        values = [
+        values: List[Optional[float]] = [
             round(random.uniform(min_val, max_val), precision) for _ in range(num_rows)
         ]
 
@@ -260,7 +263,7 @@ class DataGenerator:
 
     def _generate_string_column(
         self, field_config: Dict[str, Any], num_rows: int
-    ) -> List[Union[str, None]]:
+    ) -> List[Optional[str]]:
         """Generate string column data."""
         min_length = field_config.get("length", {}).get("min", 5)
         max_length = field_config.get("length", {}).get("max", 20)
@@ -269,7 +272,7 @@ class DataGenerator:
         null_rate = field_config.get("null_rate", 0.1) if nullable else 0
         faker_template = field_config.get("faker_template")
 
-        values = []
+        values: List[Optional[str]] = []
 
         if faker_template and self.faker:
             # Use Faker template
@@ -287,7 +290,7 @@ class DataGenerator:
         else:
             # Generate random strings
             if unique:
-                values_set = set()
+                values_set: set[str] = set()
                 max_attempts = (
                     num_rows * 100
                 )  # Prevent infinite loops for unique strings
@@ -326,7 +329,7 @@ class DataGenerator:
 
     def _generate_date_column(
         self, field_config: Dict[str, Any], num_rows: int
-    ) -> List[Union[str, None]]:
+    ) -> List[Optional[str]]:
         """Generate date column data."""
         start_date = field_config.get("range", {}).get("start", "2020-01-01")
         end_date = field_config.get("range", {}).get("end", "2024-12-31")
@@ -337,7 +340,7 @@ class DataGenerator:
         start_dt = datetime.strptime(start_date, "%Y-%m-%d")
         end_dt = datetime.strptime(end_date, "%Y-%m-%d")
 
-        values = []
+        values: List[Optional[str]] = []
         for _ in range(num_rows):
             random_days = random.randint(0, (end_dt - start_dt).days)
             random_date = start_dt + timedelta(days=random_days)
@@ -354,13 +357,15 @@ class DataGenerator:
 
     def _generate_category_column(
         self, field_config: Dict[str, Any], num_rows: int
-    ) -> List[Union[str, None]]:
+    ) -> List[Optional[str]]:
         """Generate categorical column data."""
         values_list = field_config.get("values", ["A", "B", "C"])
         nullable = field_config.get("nullable", False)
         null_rate = field_config.get("null_rate", 0.1) if nullable else 0
 
-        values = [random.choice(values_list) for _ in range(num_rows)]
+        values: List[Optional[str]] = [
+            random.choice(values_list) for _ in range(num_rows)
+        ]
 
         # Add nulls if nullable
         if nullable and null_rate > 0:
@@ -393,7 +398,7 @@ class DataGenerator:
         if not self.schema:
             raise ETLForgeError("No schema loaded. Use load_schema() first.")
 
-        data = {}
+        data: Dict[str, List[Any]] = {}
 
         for field in self.schema.get("fields", []):
             field_name = field["name"]
@@ -424,7 +429,10 @@ class DataGenerator:
         return pd.DataFrame(data)
 
     def save_data(
-        self, df: pd.DataFrame, output_path: Union[str, Path], file_format: str = None
+        self,
+        df: pd.DataFrame,
+        output_path: Union[str, Path],
+        file_format: Optional[str] = None,
     ):
         """
         Saves the generated DataFrame to a file (CSV or Excel).
@@ -463,7 +471,10 @@ class DataGenerator:
             raise ETLForgeError(f"Failed to save data to {output_path}: {e}") from e
 
     def generate_and_save(
-        self, num_rows: int, output_path: Union[str, Path], file_format: str = None
+        self,
+        num_rows: int,
+        output_path: Union[str, Path],
+        file_format: Optional[str] = None,
     ) -> pd.DataFrame:
         """
         Generates data and saves it to a file in a single step.

@@ -1,6 +1,6 @@
 # ETLForge
 
-[![build](https://github.com/kkartas/etl-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/kkartas/etl-forge/actions/workflows/ci.yml)
+[![build](https://github.com/kkartas/etlforge/actions/workflows/ci.yml/badge.svg)](https://github.com/kkartas/etlforge/actions/workflows/ci.yml)
 [![docs](https://readthedocs.org/projects/etlforge/badge/?version=latest)](https://etlforge.readthedocs.io/en/latest/)
 [![PyPI version](https://badge.fury.io/py/etl-forge.svg)](https://badge.fury.io/py/etl-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

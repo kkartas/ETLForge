@@ -110,7 +110,7 @@ class TestDataValidator:
     def test_init_empty(self):
         """Test initialization without schema."""
         validator = DataValidator()
-        assert validator.schema is None
+        assert validator.schema == {}
 
     def test_load_schema_dict(self):
         """Test loading schema from dictionary."""
