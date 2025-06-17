@@ -47,6 +47,7 @@ class TestCLIIntegration:
             schema_path = os.path.join(temp_dir, "test_schema.yaml")
             with open(schema_path, "w") as f:
                 import yaml
+
                 yaml.dump(self.test_schema, f)
 
             # Create output path
@@ -57,10 +58,13 @@ class TestCLIIntegration:
                 cli,
                 [
                     "generate",
-                    "--schema", schema_path,
-                    "--rows", "10",
-                    "--output", output_path,
-                ]
+                    "--schema",
+                    schema_path,
+                    "--rows",
+                    "10",
+                    "--output",
+                    output_path,
+                ],
             )
 
             # Check command succeeded
@@ -80,15 +84,18 @@ class TestCLIIntegration:
             schema_path = os.path.join(temp_dir, "test_schema.yaml")
             with open(schema_path, "w") as f:
                 import yaml
+
                 yaml.dump(self.test_schema, f)
 
             # Create valid test data
             data_path = os.path.join(temp_dir, "test_data.csv")
-            test_data = pd.DataFrame({
-                "id": [1, 2, 3],
-                "name": ["Alice", "Bob", "Charlie"],
-                "category": ["A", "B", "C"]
-            })
+            test_data = pd.DataFrame(
+                {
+                    "id": [1, 2, 3],
+                    "name": ["Alice", "Bob", "Charlie"],
+                    "category": ["A", "B", "C"],
+                }
+            )
             test_data.to_csv(data_path, index=False)
 
             # Run check command
@@ -96,9 +103,11 @@ class TestCLIIntegration:
                 cli,
                 [
                     "check",
-                    "--input", data_path,
-                    "--schema", schema_path,
-                ]
+                    "--input",
+                    data_path,
+                    "--schema",
+                    schema_path,
+                ],
             )
 
             # Check command succeeded
@@ -112,15 +121,18 @@ class TestCLIIntegration:
             schema_path = os.path.join(temp_dir, "test_schema.yaml")
             with open(schema_path, "w") as f:
                 import yaml
+
                 yaml.dump(self.test_schema, f)
 
             # Create invalid test data (missing column)
             data_path = os.path.join(temp_dir, "test_data.csv")
-            test_data = pd.DataFrame({
-                "id": [1, 2, 3],
-                "name": ["Alice", "Bob", "Charlie"],
-                # Missing 'category' column
-            })
+            test_data = pd.DataFrame(
+                {
+                    "id": [1, 2, 3],
+                    "name": ["Alice", "Bob", "Charlie"],
+                    # Missing 'category' column
+                }
+            )
             test_data.to_csv(data_path, index=False)
 
             # Run check command
@@ -128,9 +140,11 @@ class TestCLIIntegration:
                 cli,
                 [
                     "check",
-                    "--input", data_path,
-                    "--schema", schema_path,
-                ]
+                    "--input",
+                    data_path,
+                    "--schema",
+                    schema_path,
+                ],
             )
 
             # Check command failed with correct exit code
@@ -144,15 +158,18 @@ class TestCLIIntegration:
             schema_path = os.path.join(temp_dir, "test_schema.yaml")
             with open(schema_path, "w") as f:
                 import yaml
+
                 yaml.dump(self.test_schema, f)
 
             # Create invalid test data
             data_path = os.path.join(temp_dir, "test_data.csv")
-            test_data = pd.DataFrame({
-                "id": [1, 2, "invalid"],  # Invalid type in id column
-                "name": ["Alice", "Bob", "Charlie"],
-                "category": ["A", "B", "D"]  # Invalid category
-            })
+            test_data = pd.DataFrame(
+                {
+                    "id": [1, 2, "invalid"],  # Invalid type in id column
+                    "name": ["Alice", "Bob", "Charlie"],
+                    "category": ["A", "B", "D"],  # Invalid category
+                }
+            )
             test_data.to_csv(data_path, index=False)
 
             # Report path
@@ -163,10 +180,13 @@ class TestCLIIntegration:
                 cli,
                 [
                     "check",
-                    "--input", data_path,
-                    "--schema", schema_path,
-                    "--report", report_path,
-                ]
+                    "--input",
+                    data_path,
+                    "--schema",
+                    schema_path,
+                    "--report",
+                    report_path,
+                ],
             )
 
             # Check command failed
@@ -182,10 +202,7 @@ class TestCLIIntegration:
             schema_path = os.path.join(temp_dir, "example_schema.yaml")
 
             # Run create-schema command
-            result = self.runner.invoke(
-                cli,
-                ["create-schema", schema_path]
-            )
+            result = self.runner.invoke(cli, ["create-schema", schema_path])
 
             # Check command succeeded
             assert result.exit_code == 0
@@ -193,9 +210,10 @@ class TestCLIIntegration:
 
             # Verify schema file was created and is valid
             assert os.path.exists(schema_path)
-            
+
             # Test that the created schema can be loaded
             from etl_forge import DataGenerator
+
             generator = DataGenerator(schema_path)
             assert generator.schema is not None
             assert "fields" in generator.schema
@@ -203,14 +221,14 @@ class TestCLIIntegration:
     def test_cli_version(self):
         """Test the version command."""
         result = self.runner.invoke(cli, ["--version"])
-        
+
         assert result.exit_code == 0
         assert "1.0.1" in result.output
 
     def test_cli_help(self):
         """Test the help command."""
         result = self.runner.invoke(cli, ["--help"])
-        
+
         assert result.exit_code == 0
         assert "ETLForge" in result.output
         assert "generate" in result.output
@@ -223,6 +241,7 @@ class TestCLIIntegration:
             schema_path = os.path.join(temp_dir, "test_schema.yaml")
             with open(schema_path, "w") as f:
                 import yaml
+
                 yaml.dump(self.test_schema, f)
 
             # Create output path with .xlsx extension
@@ -233,11 +252,15 @@ class TestCLIIntegration:
                 cli,
                 [
                     "generate",
-                    "--schema", schema_path,
-                    "--rows", "5",
-                    "--output", output_path,
-                    "--format", "excel"
-                ]
+                    "--schema",
+                    schema_path,
+                    "--rows",
+                    "5",
+                    "--output",
+                    output_path,
+                    "--format",
+                    "excel",
+                ],
             )
 
             # Check command succeeded
@@ -260,10 +283,13 @@ class TestCLIIntegration:
                 cli,
                 [
                     "generate",
-                    "--schema", nonexistent_schema,
-                    "--rows", "10",
-                    "--output", output_path,
-                ]
+                    "--schema",
+                    nonexistent_schema,
+                    "--rows",
+                    "10",
+                    "--output",
+                    output_path,
+                ],
             )
 
             assert result.exit_code != 0
@@ -283,11 +309,14 @@ class TestCLIIntegration:
                 cli,
                 [
                     "generate",
-                    "--schema", schema_path,
-                    "--rows", "10",
-                    "--output", output_path,
-                ]
+                    "--schema",
+                    schema_path,
+                    "--rows",
+                    "10",
+                    "--output",
+                    output_path,
+                ],
             )
 
             assert result.exit_code != 0
-            assert "Error:" in result.output 
+            assert "Error:" in result.output

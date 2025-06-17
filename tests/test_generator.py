@@ -62,7 +62,7 @@ class TestDataGenerator:
     def test_init_empty(self):
         """Test initialization without schema."""
         generator = DataGenerator()
-        assert generator.schema is None
+        assert generator.schema == {}
 
     def test_load_schema_dict(self):
         """Test loading schema from dictionary."""
@@ -181,7 +181,7 @@ class TestDataGenerator:
     def test_unsupported_field_type(self):
         """Test handling of unsupported field types."""
         bad_schema = {"fields": [{"name": "bad_field", "type": "unsupported_type"}]}
-        
+
         # Schema validation now catches this during initialization
         with pytest.raises(ETLForgeError, match="has unsupported type"):
             DataGenerator(bad_schema)

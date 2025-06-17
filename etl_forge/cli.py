@@ -62,19 +62,37 @@ def generate(schema, rows, output, format):
 
     except ETLForgeError as e:
         click.echo(click.style(f"❌ Schema/Generation Error: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Tip: Check your schema file format and field definitions", fg="yellow"), err=True)
+        click.echo(
+            click.style(
+                "💡 Tip: Check your schema file format and field definitions",
+                fg="yellow",
+            ),
+            err=True,
+        )
         raise click.Abort()
     except FileNotFoundError as e:
         click.echo(click.style(f"❌ File not found: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Tip: Verify that all file paths are correct", fg="yellow"), err=True)
+        click.echo(
+            click.style("💡 Tip: Verify that all file paths are correct", fg="yellow"),
+            err=True,
+        )
         raise click.Abort()
     except PermissionError as e:
         click.echo(click.style(f"❌ Permission denied: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Tip: Check file/directory permissions", fg="yellow"), err=True)
+        click.echo(
+            click.style("💡 Tip: Check file/directory permissions", fg="yellow"),
+            err=True,
+        )
         raise click.Abort()
     except Exception as e:
         click.echo(click.style(f"❌ Unexpected error: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Please report this issue at: https://github.com/kkartas/etl-forge/issues", fg="yellow"), err=True)
+        click.echo(
+            click.style(
+                "💡 Please report this issue at: https://github.com/kkartas/etl-forge/issues",
+                fg="yellow",
+            ),
+            err=True,
+        )
         raise click.Abort()
 
 
@@ -99,7 +117,12 @@ def generate(schema, rows, output, format):
     type=click.Path(),
     help="Path to save invalid rows report (optional)",
 )
-@click.option("--verbose", "-v", is_flag=True, help="Show detailed validation errors for up to the first 20 invalid records")
+@click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    help="Show detailed validation errors for up to the first 20 invalid records",
+)
 def check(input, schema, report, verbose):
     """Validate data against a schema."""
     try:
@@ -144,19 +167,36 @@ def check(input, schema, report, verbose):
 
     except ETLForgeError as e:
         click.echo(click.style(f"❌ Schema/Validation Error: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Tip: Check your schema file format and data structure", fg="yellow"), err=True)
+        click.echo(
+            click.style(
+                "💡 Tip: Check your schema file format and data structure", fg="yellow"
+            ),
+            err=True,
+        )
         raise click.Abort()
     except FileNotFoundError as e:
         click.echo(click.style(f"❌ File not found: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Tip: Verify that all file paths are correct", fg="yellow"), err=True)
+        click.echo(
+            click.style("💡 Tip: Verify that all file paths are correct", fg="yellow"),
+            err=True,
+        )
         raise click.Abort()
     except PermissionError as e:
         click.echo(click.style(f"❌ Permission denied: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Tip: Check file/directory permissions", fg="yellow"), err=True)
+        click.echo(
+            click.style("💡 Tip: Check file/directory permissions", fg="yellow"),
+            err=True,
+        )
         raise click.Abort()
     except Exception as e:
         click.echo(click.style(f"❌ Unexpected error: {e}", fg="red"), err=True)
-        click.echo(click.style("💡 Please report this issue at: https://github.com/kkartas/etl-forge/issues", fg="yellow"), err=True)
+        click.echo(
+            click.style(
+                "💡 Please report this issue at: https://github.com/kkartas/etl-forge/issues",
+                fg="yellow",
+            ),
+            err=True,
+        )
         raise click.Abort()
 
 

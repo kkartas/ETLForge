@@ -249,14 +249,20 @@ class DataValidator:
 
                 # Only check ranges for valid numeric values
                 if field["type"].lower() == "int":
-                    valid_numeric_mask = column_data.apply(
-                        lambda x: isinstance(x, (int, np.integer)) or 
-                        (isinstance(x, (float, np.floating)) and x.is_integer())
-                    ) & column_data.notnull()
+                    valid_numeric_mask = (
+                        column_data.apply(
+                            lambda x: isinstance(x, (int, np.integer))
+                            or (isinstance(x, (float, np.floating)) and x.is_integer())
+                        )
+                        & column_data.notnull()
+                    )
                 else:  # float
-                    valid_numeric_mask = column_data.apply(
-                        lambda x: isinstance(x, (int, float, np.number))
-                    ) & column_data.notnull()
+                    valid_numeric_mask = (
+                        column_data.apply(
+                            lambda x: isinstance(x, (int, float, np.number))
+                        )
+                        & column_data.notnull()
+                    )
 
                 valid_numeric_data = column_data[valid_numeric_mask]
 
