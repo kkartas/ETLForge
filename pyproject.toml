@@ -47,8 +47,8 @@ dev = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/kkartas/etl-forge"
-"Bug Tracker" = "https://github.com/kkartas/etl-forge/issues"
+"Homepage" = "https://github.com/kkartas/ETLForge"
+"Bug Tracker" = "https://github.com/kkartas/ETLForge/issues"
 
 [project.scripts]
 etl-forge = "etl_forge.cli:cli"
