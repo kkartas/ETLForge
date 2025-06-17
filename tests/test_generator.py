@@ -181,10 +181,10 @@ class TestDataGenerator:
     def test_unsupported_field_type(self):
         """Test handling of unsupported field types."""
         bad_schema = {"fields": [{"name": "bad_field", "type": "unsupported_type"}]}
-        generator = DataGenerator(bad_schema)
-
-        with pytest.raises(ETLForgeError, match="Unsupported field type"):
-            generator.generate_data(1)
+        
+        # Schema validation now catches this during initialization
+        with pytest.raises(ETLForgeError, match="has unsupported type"):
+            DataGenerator(bad_schema)
 
 
 @pytest.mark.parametrize("file_format,extension", [("csv", ".csv"), ("excel", ".xlsx")])

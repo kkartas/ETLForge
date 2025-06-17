@@ -6,10 +6,11 @@ import click
 from .generator import DataGenerator
 from .validator import DataValidator
 from .exceptions import ETLForgeError
+from . import __version__
 
 
 @click.group()
-@click.version_option(version="1.0.0", prog_name="etl-forge")
+@click.version_option(version=__version__, prog_name="etl-forge")
 def cli():
     """ETLForge - Generate synthetic test data and validate ETL outputs."""
     pass
@@ -60,12 +61,20 @@ def generate(schema, rows, output, format):
         )
 
     except ETLForgeError as e:
-        click.echo(click.style(f"❌ Error: {e}", fg="red"), err=True)
+        click.echo(click.style(f"❌ Schema/Generation Error: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Tip: Check your schema file format and field definitions", fg="yellow"), err=True)
+        raise click.Abort()
+    except FileNotFoundError as e:
+        click.echo(click.style(f"❌ File not found: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Tip: Verify that all file paths are correct", fg="yellow"), err=True)
+        raise click.Abort()
+    except PermissionError as e:
+        click.echo(click.style(f"❌ Permission denied: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Tip: Check file/directory permissions", fg="yellow"), err=True)
         raise click.Abort()
     except Exception as e:
-        click.echo(
-            click.style(f"❌ An unexpected error occurred: {e}", fg="red"), err=True
-        )
+        click.echo(click.style(f"❌ Unexpected error: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Please report this issue at: https://github.com/kkartas/etl-forge/issues", fg="yellow"), err=True)
         raise click.Abort()
 
 
@@ -134,12 +143,20 @@ def check(input, schema, report, verbose):
             ctx.exit(1)
 
     except ETLForgeError as e:
-        click.echo(click.style(f"❌ Error: {e}", fg="red"), err=True)
+        click.echo(click.style(f"❌ Schema/Validation Error: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Tip: Check your schema file format and data structure", fg="yellow"), err=True)
+        raise click.Abort()
+    except FileNotFoundError as e:
+        click.echo(click.style(f"❌ File not found: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Tip: Verify that all file paths are correct", fg="yellow"), err=True)
+        raise click.Abort()
+    except PermissionError as e:
+        click.echo(click.style(f"❌ Permission denied: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Tip: Check file/directory permissions", fg="yellow"), err=True)
         raise click.Abort()
     except Exception as e:
-        click.echo(
-            click.style(f"❌ An unexpected error occurred: {e}", fg="red"), err=True
-        )
+        click.echo(click.style(f"❌ Unexpected error: {e}", fg="red"), err=True)
+        click.echo(click.style("💡 Please report this issue at: https://github.com/kkartas/etl-forge/issues", fg="yellow"), err=True)
         raise click.Abort()
 
 

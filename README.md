@@ -28,21 +28,57 @@ A Python library for generating synthetic test data and validating ETL outputs. 
 
 ## Installation
 
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
+
+### Install from PyPI (Recommended)
 ```bash
-pip install -r requirements.txt
+pip install etl-forge
+```
+
+### Install from Source
+For development or latest features:
+```bash
+git clone https://github.com/kkartas/etl-forge.git
+cd etl-forge
 pip install -e .
 ```
 
-You can also install it directly from GitHub:
+### Dependencies
+**Core dependencies** (6 total, automatically installed):
+- `pandas>=1.3.0` - Data manipulation and analysis
+- `pyyaml>=5.4.0` - YAML parsing for schema files
+- `click>=8.0.0` - Command-line interface framework
+- `openpyxl>=3.0.0` - Excel file support
+- `numpy>=1.21.0` - Numerical computing
+- `psutil>=5.9.0` - System monitoring for benchmarks
+
+**Optional dependencies** for enhanced features:
 ```bash
-pip install git+https://github.com/kkartas/etl-forge.git
+# For realistic data generation using Faker templates
+pip install etl-forge[faker]
+
+# For development (testing, linting, documentation)
+pip install etl-forge[dev]
 ```
 
-### Optional Dependencies
-
-For enhanced string generation with realistic data:
+### Verify Installation
 ```bash
-pip install faker
+# CLI verification (may require adding Scripts directory to PATH on Windows)
+etl-forge --version
+
+# Alternative CLI access (works on all platforms)
+python -m etl_forge.cli --version
+
+# Library verification
+python -c "from etl_forge import DataGenerator, DataValidator; print('✅ Installation verified')"
+```
+
+### CLI Access Note
+On some systems (especially Windows), the `etl-forge` command may not be directly accessible. In such cases, use:
+```bash
+python -m etl_forge.cli [command] [options]
 ```
 
 ## Quick Start
@@ -79,7 +115,11 @@ fields:
 
 **Command Line:**
 ```bash
+# Direct CLI command (if available)
 etl-forge generate --schema schema.yaml --rows 500 --output sample.csv
+
+# Alternative CLI access (works on all platforms)
+python -m etl_forge.cli generate --schema schema.yaml --rows 500 --output sample.csv
 ```
 
 **Python Library:**
@@ -95,7 +135,11 @@ generator.save_data(df, 'sample.csv')
 
 **Command Line:**
 ```bash
+# Direct CLI command (if available)
 etl-forge check --input sample.csv --schema schema.yaml --report invalid_rows.csv
+
+# Alternative CLI access (works on all platforms)
+python -m etl_forge.cli check --input sample.csv --schema schema.yaml --report invalid_rows.csv
 ```
 
 **Python Library:**
@@ -184,7 +228,11 @@ print(f"Validation passed: {result.is_valid}")
 
 ### Generate Data
 ```bash
+# Direct CLI command (if available)
 etl-forge generate [OPTIONS]
+
+# Alternative CLI access (works on all platforms)
+python -m etl_forge.cli generate [OPTIONS]
 
 Options:
   -s, --schema PATH     Path to schema file (YAML or JSON) [required]
@@ -195,7 +243,11 @@ Options:
 
 ### Validate Data
 ```bash
+# Direct CLI command (if available)
 etl-forge check [OPTIONS]
+
+# Alternative CLI access (works on all platforms)
+python -m etl_forge.cli check [OPTIONS]
 
 Options:
   -i, --input PATH      Path to input data file [required]
@@ -206,7 +258,11 @@ Options:
 
 ### Create Example Schema
 ```bash
-etl-forge create-example-schema example_schema.yaml
+# Direct CLI command (if available)
+etl-forge create-schema example_schema.yaml
+
+# Alternative CLI access (works on all platforms)
+python -m etl_forge.cli create-schema example_schema.yaml
 ```
 
 ## Library Usage
@@ -344,31 +400,3 @@ make html
 ```
 
 Then open `docs/build/html/index.html` in your browser.
-
-## Running Tests
-
-To run the full test suite and view a coverage report:
-
-```bash
-pip install -e ".[dev]"
-pytest --cov=etl_forge
-```
-
-## Contributing
-
-Contributions are welcome! Please read `CONTRIBUTING.md` for details on how to set up your development environment, run tests, and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
-
-## Citation
-
-If you use `ETLForge` in your research or work, please cite it using the information in `CITATION.cff`.
-
-To run the performance benchmarks, use the following command:
-```bash
-pytest --cov=etl_forge
-```
-
-Then, to visualize the results: 

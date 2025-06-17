@@ -59,6 +59,7 @@ class DataGenerator:
         """
         if isinstance(schema_path, dict):
             self.schema = schema_path
+            self._validate_schema()
             return
 
         schema_path_obj = Path(schema_path)
@@ -76,6 +77,84 @@ class DataGenerator:
                     raise ETLForgeError(f"Unsupported schema file format: {suffix}")
         except (IOError, yaml.YAMLError, json.JSONDecodeError) as e:
             raise ETLForgeError(f"Failed to load or parse a schema file: {e}") from e
+        
+        self._validate_schema()
+
+    def _validate_schema(self):
+        """
+        Validates the loaded schema for correctness and completeness.
+        
+        Raises:
+            ETLForgeError: If the schema is invalid or missing required fields.
+        """
+        if not self.schema:
+            raise ETLForgeError("Schema is empty or None")
+        
+        if "fields" not in self.schema:
+            raise ETLForgeError("Schema must contain a 'fields' key")
+        
+        fields = self.schema["fields"]
+        if not isinstance(fields, list) or len(fields) == 0:
+            raise ETLForgeError("Schema 'fields' must be a non-empty list")
+        
+        field_names = set()
+        supported_types = {"int", "float", "string", "date", "category"}
+        
+        for i, field in enumerate(fields):
+            if not isinstance(field, dict):
+                raise ETLForgeError(f"Field at index {i} must be a dictionary")
+            
+            # Check required fields
+            if "name" not in field:
+                raise ETLForgeError(f"Field at index {i} is missing required 'name' property")
+            
+            if "type" not in field:
+                raise ETLForgeError(f"Field '{field.get('name', i)}' is missing required 'type' property")
+            
+            field_name = field["name"]
+            field_type = field["type"]
+            
+            # Check for duplicate field names
+            if field_name in field_names:
+                raise ETLForgeError(f"Duplicate field name '{field_name}' found")
+            field_names.add(field_name)
+            
+            # Validate field type
+            if field_type not in supported_types:
+                raise ETLForgeError(
+                    f"Field '{field_name}' has unsupported type '{field_type}'. "
+                    f"Supported types: {', '.join(sorted(supported_types))}"
+                )
+            
+            # Type-specific validations
+            if field_type in ["int", "float"] and "range" in field:
+                range_config = field["range"]
+                if not isinstance(range_config, dict):
+                    raise ETLForgeError(f"Field '{field_name}' range must be a dictionary")
+                
+                if "min" in range_config and "max" in range_config:
+                    if range_config["min"] >= range_config["max"]:
+                        raise ETLForgeError(f"Field '{field_name}' min value must be less than max value")
+            
+            if field_type == "category" and "values" in field:
+                values = field["values"]
+                if not isinstance(values, list) or len(values) == 0:
+                    raise ETLForgeError(f"Field '{field_name}' values must be a non-empty list")
+            
+            if field_type == "string" and "length" in field:
+                length_config = field["length"]
+                if not isinstance(length_config, dict):
+                    raise ETLForgeError(f"Field '{field_name}' length must be a dictionary")
+                
+                if "min" in length_config and "max" in length_config:
+                    if length_config["min"] >= length_config["max"]:
+                        raise ETLForgeError(f"Field '{field_name}' min length must be less than max length")
+            
+            # Validate null_rate
+            if "null_rate" in field:
+                null_rate = field["null_rate"]
+                if not isinstance(null_rate, (int, float)) or not (0 <= null_rate <= 1):
+                    raise ETLForgeError(f"Field '{field_name}' null_rate must be a number between 0 and 1")
 
     def _generate_int_column(
         self, field_config: Dict[str, Any], num_rows: int
@@ -92,10 +171,29 @@ class DataGenerator:
                 raise ETLForgeError(
                     f"Cannot generate {num_rows} unique integers for column '{field_config['name']}' in range [{min_val}, {max_val}]"
                 )
-            # This is inefficient for large ranges, but sufficient for this implementation.
-            # A more robust solution might use random sampling without replacement.
-            pool = list(range(min_val, max_val + 1))
-            values = random.sample(pool, num_rows)
+            
+            # Optimized unique integer generation for large ranges
+            range_size = max_val - min_val + 1
+            if range_size < num_rows * 10:
+                # For small ranges, use the original approach
+                pool = list(range(min_val, max_val + 1))
+                values = random.sample(pool, num_rows)
+            else:
+                # For large ranges, use set-based sampling to avoid memory issues
+                values = set()
+                max_attempts = num_rows * 10  # Prevent infinite loops
+                attempts = 0
+                while len(values) < num_rows and attempts < max_attempts:
+                    values.add(random.randint(min_val, max_val))
+                    attempts += 1
+                
+                if len(values) < num_rows:
+                    raise ETLForgeError(
+                        f"Could not generate {num_rows} unique integers for column '{field_config['name']}' "
+                        f"after {max_attempts} attempts. Consider expanding the range."
+                    )
+                values = list(values)
+                random.shuffle(values)
         else:
             values = [random.randint(min_val, max_val) for _ in range(num_rows)]
 
@@ -161,12 +259,21 @@ class DataGenerator:
             # Generate random strings
             if unique:
                 values_set = set()
-                while len(values_set) < num_rows:
+                max_attempts = num_rows * 100  # Prevent infinite loops for unique strings
+                attempts = 0
+                while len(values_set) < num_rows and attempts < max_attempts:
                     length = random.randint(min_length, max_length)
                     value = "".join(
                         random.choices(string.ascii_letters + string.digits, k=length)
                     )
                     values_set.add(value)
+                    attempts += 1
+                
+                if len(values_set) < num_rows:
+                    raise ETLForgeError(
+                        f"Could not generate {num_rows} unique strings for column '{field_config['name']}' "
+                        f"after {max_attempts} attempts. Consider increasing string length range."
+                    )
                 values = list(values_set)
                 random.shuffle(values)
             else:

@@ -1,5 +1,5 @@
 """
-Performance benchmark script for ETLTest.
+Performance benchmark script for ETLForge.
 
 This script measures the time taken for two core operations:
 1. Data Generation: Creating a DataFrame based on a schema.
@@ -12,12 +12,13 @@ import time
 import platform
 import psutil
 import pandas as pd
-from etltest.generator import DataGenerator
-from etltest.validator import DataValidator
+from etl_forge.generator import DataGenerator
+from etl_forge.validator import DataValidator
 
 # --- Configuration ---
 SCHEMA_PATH = 'benchmark_schema.yaml'
 ROW_COUNTS = [10_000, 100_000, 1_000_000]
+RESULTS_PATH = 'benchmark_results.csv'
 
 def get_system_info():
     """Gathers system information for benchmark context."""
@@ -30,7 +31,7 @@ def get_system_info():
 
 def run_benchmark():
     """Runs the full benchmark suite and prints the results."""
-    print("--- ETLTest Performance Benchmark ---")
+    print("--- ETLForge Performance Benchmark ---")
     
     # Print System Info
     print("\n[System Information]")
@@ -42,6 +43,10 @@ def run_benchmark():
     try:
         generator = DataGenerator(SCHEMA_PATH)
         validator = DataValidator(SCHEMA_PATH)
+    except FileNotFoundError:
+        print(f"\nError: Schema file '{SCHEMA_PATH}' not found.")
+        print("Please ensure the benchmark schema file exists in the current directory.")
+        return
     except Exception as e:
         print(f"\nError initializing tools: {e}")
         return
@@ -78,18 +83,32 @@ def run_benchmark():
                 val_duration = -1.0
 
         results.append({
-            "Rows": f"{rows:,}",
-            "Generation Time (s)": f"{gen_duration:.4f}",
-            "Validation Time (s)": f"{val_duration:.4f}",
+            "Rows": rows,
+            "Generation Time (s)": gen_duration,
+            "Validation Time (s)": val_duration,
         })
 
+    # Create and save results DataFrame
+    results_df = pd.DataFrame(results)
+    try:
+        results_df.to_csv(RESULTS_PATH, index=False)
+        print(f"\nBenchmark results saved to '{RESULTS_PATH}'")
+    except IOError as e:
+        print(f"\nError saving results to '{RESULTS_PATH}': {e}")
+        
     # Print results in a markdown-friendly table
     print("\n--- Benchmark Results ---")
+    # Format for printing
+    display_df = results_df.copy()
+    display_df["Rows"] = display_df["Rows"].apply(lambda x: f"{x:,}")
+    display_df["Generation Time (s)"] = display_df["Generation Time (s)"].apply(lambda x: f"{x:.4f}")
+    display_df["Validation Time (s)"] = display_df["Validation Time (s)"].apply(lambda x: f"{x:.4f}")
+
     header = "| Rows       | Generation Time (s) | Validation Time (s) |"
     separator = "|------------|---------------------|---------------------|"
     print(header)
     print(separator)
-    for res in results:
+    for _, res in display_df.iterrows():
         print(f"| {res['Rows']:<10} | {res['Generation Time (s)']:<19} | {res['Validation Time (s)']:<19} |")
 
 if __name__ == "__main__":

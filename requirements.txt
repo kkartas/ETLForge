@@ -3,4 +3,4 @@ pyyaml>=5.4.0
 click>=8.0.0
 openpyxl>=3.0.0
 numpy>=1.21.0
-faker>=15.0.0 
+psutil>=5.9.0 

@@ -1,6 +1,6 @@
 # Performance Benchmarks
 
-This document provides performance benchmarks for the `ETLTest` framework. The benchmarks were run using the `benchmark.py` script, which measures the time for data generation and validation across a range of dataset sizes.
+This document provides performance benchmarks for the `ETLForge` framework. The benchmarks were run using the `benchmark.py` script, which measures the time for data generation and validation across a range of dataset sizes.
 
 ## Methodology
 
@@ -23,7 +23,7 @@ The following benchmarks were run on the system detailed below:
 
 The results show that both generation and validation times scale linearly with the number of rows.
 
-![ETLTest Performance Plot](benchmark_plot.png)
+![ETLForge Performance Plot](benchmark_plot.png)
 
 | Rows        | Generation Time (s) | Validation Time (s) |
 |-------------|-----------------------|-----------------------|
@@ -41,7 +41,7 @@ pip install -e ".[dev]"
 python benchmark.py
 ```
 
-To reproduce the plot:
+To reproduce the plot from the generated `benchmark_results.csv`:
 ```bash
 python plot_benchmark.py
 ``` 

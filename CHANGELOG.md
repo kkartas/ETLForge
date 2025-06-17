@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2024-12-13
 
 ### Added
-- Initial release of `ETLTest`.
+- Initial release of `ETLForge`.
 - **Data Generator**:
   - Generate synthetic data from YAML/JSON schema.
   - Supported types: `int`, `float`, `string`, `date`, `category`.
@@ -37,8 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Checks: column existence, data types, value constraints, uniqueness, nullability, date formats.
   - Generate a report of invalid rows.
 - **CLI**:
-  - `etltest generate` command for data generation.
-  - `etltest check` command for data validation.
+  - `etl-forge generate` command for data generation.
+  - `etl-forge check` command for data validation.
 - **Library**:
   - `DataGenerator` and `DataValidator` classes for programmatic use.
 - **Testing**:

@@ -1,16 +1,17 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
-title: "ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
+title: "ETLForge: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
 version: 1.0.0
 date-released: 2025-06-15
-url: "https://github.com/kkartas/etltest"
-repository-code: "https://github.com/kkartas/etltest"
+url: "https://github.com/kkartas/etl-forge"
+repository-code: "https://github.com/kkartas/etl-forge"
 license: MIT
 authors:
   - family-names: "Kartas"
     given-names: "Kyriakos"
     email: "mail@kkartas.gr"
+    orcid: "https://orcid.org/0009-0001-6477-4676"
 keywords:
   - Python
   - ETL
@@ -20,7 +21,7 @@ keywords:
   - testing
   - data engineering
 abstract: >-
-  ETLTest is a comprehensive Python framework for synthetic test data 
+  ETLForge is a comprehensive Python framework for synthetic test data 
   generation and automated ETL output validation. The framework enables 
   data engineers and scientists to create realistic test datasets based 
   on declarative schema definitions and automatically validate data 
@@ -28,19 +29,20 @@ abstract: >-
   and maintainability of ETL pipelines.
 preferred-citation:
   type: article
-  title: "ETLTest: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
+  title: "ETLForge: A Python Framework for Synthetic Test Data Generation and ETL Pipeline Validation"
   authors:
     - family-names: "Kartas"
       given-names: "Kyriakos"
       email: "mail@kkartas.gr"
+      orcid: "https://orcid.org/0009-0001-6477-4676"
   journal: "Journal of Open Source Software"
-  year: 2025
+  year: 2024
   volume: TBD
   issue: TBD
   start: TBD
   end: TBD
   doi: "TBD"
-  url: "https://github.com/kkartas/etltest"
+  url: "https://github.com/kkartas/etl-forge"
 references:
   - type: software
     title: "pandas: powerful Python data analysis toolkit"

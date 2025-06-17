@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
-set SPHINXPROJ=etltest
+set SPHINXPROJ=etl-forge
 
 if "%1" == "" goto help
 

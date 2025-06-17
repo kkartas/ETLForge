@@ -11,3 +11,4 @@
 # Coverage
 /coverage.xml
 /.coverage
+test_data.csv

@@ -241,15 +241,28 @@ class DataValidator:
                         f"Duplicate value '{df.loc[idx, field_name]}' in unique column '{field_name}'",
                     )
 
-            # Check range constraints
+            # Check range constraints (only for valid numeric types)
             if "range" in field and field["type"].lower() in ["int", "float"]:
                 range_config = field["range"]
                 min_val = range_config.get("min")
                 max_val = range_config.get("max")
 
+                # Only check ranges for valid numeric values
+                if field["type"].lower() == "int":
+                    valid_numeric_mask = column_data.apply(
+                        lambda x: isinstance(x, (int, np.integer)) or 
+                        (isinstance(x, (float, np.floating)) and x.is_integer())
+                    ) & column_data.notnull()
+                else:  # float
+                    valid_numeric_mask = column_data.apply(
+                        lambda x: isinstance(x, (int, float, np.number))
+                    ) & column_data.notnull()
+
+                valid_numeric_data = column_data[valid_numeric_mask]
+
                 if min_val is not None:
-                    below_min_mask = (column_data < min_val) & column_data.notnull()
-                    below_min_indices = df[below_min_mask].index
+                    below_min_mask = valid_numeric_data < min_val
+                    below_min_indices = valid_numeric_data[below_min_mask].index
                     for idx in below_min_indices:
                         result.add_error(
                             "range_violation",
@@ -259,8 +272,8 @@ class DataValidator:
                         )
 
                 if max_val is not None:
-                    above_max_mask = (column_data > max_val) & column_data.notnull()
-                    above_max_indices = df[above_max_mask].index
+                    above_max_mask = valid_numeric_data > max_val
+                    above_max_indices = valid_numeric_data[above_max_mask].index
                     for idx in above_max_indices:
                         result.add_error(
                             "range_violation",
