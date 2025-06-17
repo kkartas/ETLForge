@@ -99,7 +99,7 @@ def generate(schema, rows, output, format):
     type=click.Path(),
     help="Path to save invalid rows report (optional)",
 )
-@click.option("--verbose", "-v", is_flag=True, help="Show detailed validation errors")
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed validation errors for up to the first 20 invalid records")
 def check(input, schema, report, verbose):
     """Validate data against a schema."""
     try:

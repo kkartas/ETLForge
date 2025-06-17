@@ -26,13 +26,15 @@ bibliography: paper.bib
 
 # Statement of Need
 
-Modern data pipelines are complex and brittle. A common failure point is the unexpected deviation of data from its assumed schema, whether in structure, type, or value constraints. Manually creating and maintaining test data that covers a wide range of scenarios is tedious, error-prone, and often inadequate. While numerous tools exist for either data generation or data validation, few offer an integrated solution where a single, declarative schema serves as the single source of truth for both processes. This disconnect forces developers to maintain parallel definitions or scripts, increasing overhead and the risk of inconsistencies.
+In modern data engineering, ensuring the reliability of Extract, Transform, Load (ETL) pipelines is critical. A primary challenge is maintaining data quality and integrity as data moves through complex systems [@Kimball2013]. Testing these pipelines requires high-quality, representative data, yet creating and maintaining this data is a significant bottleneck [@Redman2016]. Developers often find themselves managing two separate, disconnected processes: generating synthetic data for testing and writing validation rules to check pipeline outputs.
 
-`ETLForge` addresses this gap by providing an easy-to-use, unified framework. Its primary function is to simplify and accelerate the testing cycle in data engineering. By using one schema to both generate mock data and validate pipeline outputs, it reduces complexity, eliminates redundancy, and ensures that tests are always aligned with data specifications. This is particularly valuable in agile and CI/CD environments where rapid, reliable testing is essential for maintaining data quality and pipeline integrity.
+While powerful libraries exist for data generation (e.g., `Faker` [@Faker2024]) and data validation (e.g., `Great Expectations` [@GreatExpectations2023], `Pandera` [@Pandera2023]), they operate independently. This separation forces developers to define and maintain data schemas and business rules in multiple places, leading to code duplication, synchronization errors, and incomplete testing. A validation rule may be updated without a corresponding change to the data generator, or vice-versa, creating a gap where bugs can go undetected.
+
+`ETLForge` is designed to solve this specific problem by unifying data generation and validation under a single, declarative schema. By providing a single source of truth (a YAML or JSON file), it ensures that the data used for testing and the rules for validation are always perfectly synchronized. This integrated, schema-first approach simplifies the testing workflow, reduces maintenance overhead, and significantly improves the robustness of the data quality assurance process, which is essential in CI/CD and agile development environments [@Fowler2013].
 
 # State of the Field
 
-The landscape of data testing tools includes powerful libraries for both synthetic data generation and data validation. For generation, `Faker` [@faker] is a widely-used library for producing realistic-looking fake data, such as names, addresses, and other common types. For validation, frameworks like `Great Expectations` [@greatexpectations] and `Pandera` [@pandera] provide robust, declarative APIs for defining and executing data quality checks on dataframes.
+The landscape of data testing tools includes powerful libraries for both synthetic data generation and data validation. For generation, `Faker` [@Faker2024] is a widely-used library for producing realistic-looking fake data, such as names, addresses, and other common types. For validation, frameworks like `Great Expectations` [@GreatExpectations2023] and `Pandera` [@Pandera2023] provide robust, declarative APIs for defining and executing data quality checks on dataframes.
 
 While these tools are excellent in their respective domains, they are not designed to work together seamlessly out-of-the-box. A developer using `Faker` to generate data and `Pandera` to validate it would need to write and maintain separate definitions for each. For example, a rule to generate a unique integer ID between 1 and 1000 in the generator would need a corresponding `pa.Check.between(1, 1000)` and `unique=True` check in the validator.
 
@@ -130,8 +132,8 @@ For example, researchers studying distributed data processing algorithms can use
 
 `ETLForge` is implemented in Python 3.8+ using modern software engineering practices:
 
-- **Core dependencies**: pandas for data manipulation, PyYAML for schema parsing, Click for CLI
-- **Optional integrations**: Faker for realistic data generation, openpyxl for Excel support
+- **Core dependencies**: pandas [@McKinney2010] for data manipulation, NumPy [@Harris2020] for numerical operations, PyYAML [@pyyaml] for schema parsing, and Click [@click2022] for the CLI.
+- **Optional integrations**: Faker [@Faker2024] for realistic data generation, openpyxl for Excel support
 - **Architecture**: Modular design with separate generator and validator components
 - **Testing**: Comprehensive test suite with 54 unit tests achieving high coverage
 - **Documentation**: Extensive user guide with examples and API documentation
@@ -142,7 +144,7 @@ The framework follows Python packaging standards and is installable via pip, mak
 
 To validate the framework's scalability, we performed a benchmark on a standard developer machine (Windows 10, Intel i7, 32 GB RAM) using the `benchmark.py` and `plot_benchmark.py` scripts included in the repository. The benchmark measures the time to generate and subsequently validate datasets of increasing size. The results, shown below, demonstrate that `ETLForge` scales in a near-linear fashion for both core operations (note the log-log scale of the plot).
 
-![Performance of ETLForge generation and validation tasks.](benchmark_plot.png)
+![Figure 1: Performance benchmark of ETLForge's data generation and validation tasks. Both operations demonstrate near-linear scalability with the number of rows (axes are on a log-log scale).](benchmark_plot.png)
 
 Full details on the benchmarking methodology and environment are available in `BENCHMARKS.md`. This performance makes the framework suitable for both rapid development testing and large-scale data validation scenarios.
 
@@ -156,7 +158,7 @@ The following table compares `ETLForge` with existing tools in the data validati
 | **Integrated Validation** | Built-in with shared schema | Not supported | Comprehensive | Full Python validation |
 | **Unified Gen/Validate Schema** | Single source of truth | Separate tooling required | Separate schemas | No generation |
 | **Setup Complexity** | Single config file | Minimal | Multi-file configuration | Medium |
-| **Dependency Weight** | 6 core dependencies | Lightweight | Heavy (>50 dependencies) | Moderate |
+| **Dependency Weight** | 6 core dependencies | Lightweight | Heavy (>50) | Moderate |
 | **CLI Interface** | Full-featured | Basic | Web-based + CLI | Python-only |
 | **Export Formats** | CSV, Excel | Multiple | Various | DataFrame-focused |
 
@@ -180,6 +182,4 @@ The framework's open-source nature and comprehensive documentation lower the bar
 
 # Acknowledgements
 
-I acknowledge contributions from the open-source community, whose feedback and suggestions have been invaluable.
-
-# References 
+I acknowledge contributions from the open-source community, whose feedback and suggestions have been invaluable. 

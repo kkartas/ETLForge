@@ -17,7 +17,6 @@ sphinx:
 # If you have requirements for building the documentation, specify them here.
 python:
    install:
-   - requirements: requirements.txt
    - method: pip
      path: .
      extra_requirements:

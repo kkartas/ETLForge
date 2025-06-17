@@ -14,7 +14,7 @@ Thank you for your interest in contributing to ETLForge! This guide will help yo
 2. **Set up development environment**:
    ```bash
    pip install -e ".[dev]"
-   python -m pytest tests/  # Verify setup
+   pytest tests/  # Verify setup
    ```
 
 3. **Make your changes** and ensure tests pass:

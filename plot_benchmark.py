@@ -33,16 +33,20 @@ def create_plot(df: pd.DataFrame):
     ax = sns.lineplot(data=df_melted, x='Rows', y='Time (s)', hue='Operation', marker='o')
 
     # Customize plot
+    ax.set_xscale('log')
+    ax.set_yscale('log')
     ax.set_title('ETLForge Performance Benchmark', fontsize=16)
-    ax.set_xlabel('Number of Rows', fontsize=12)
-    ax.set_ylabel('Time (seconds)', fontsize=12)
-    ax.ticklabel_format(style='plain', axis='x') # No scientific notation on x-axis
+    ax.set_xlabel('Number of Rows (log scale)', fontsize=12)
+    ax.set_ylabel('Time (seconds, log scale)', fontsize=12)
     
     # Format x-axis labels with commas
-    ax.get_xaxis().set_major_formatter(
-        plt.FuncFormatter(lambda x, p: format(int(x), ','))
-    )
-    plt.xticks(rotation=45)
+    # ax.ticklabel_format(style='plain', axis='x') # No scientific notation on x-axis
+    
+    # Format x-axis labels with commas
+    # ax.get_xaxis().set_major_formatter(
+    #     plt.FuncFormatter(lambda x, p: format(int(x), ','))
+    # )
+    # plt.xticks(rotation=45)
     plt.tight_layout()
 
     # Save the plot

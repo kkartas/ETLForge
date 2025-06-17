@@ -37,25 +37,31 @@ class DataGenerator:
                 containing the schema definition.
 
         Raises:
-            ETLForgeError: If the schema file cannot be found or parsed.
+            ETLForgeError: If the schema cannot be loaded or is invalid.
         """
         self.faker = Faker() if FAKER_AVAILABLE else None
-        self.schema: Dict[str, Any] = None
+        self.schema: Dict[str, Any] = {}
 
         if schema_path:
             self.load_schema(schema_path)
 
     def load_schema(self, schema_path: Union[str, Path, dict]):
         """
-        Loads a schema from a file path or a dictionary.
+        Loads and validates a schema from a file path or a dictionary.
+
+        This method supports both file paths (YAML or JSON) and direct
+        dictionary objects as input. It orchestrates the loading and
+        subsequent validation of the schema.
 
         Args:
             schema_path: The path to a YAML/JSON schema file or a dictionary
                 containing the schema definition.
 
         Raises:
-            ETLForgeError: If the schema file is not found, has an unsupported
-                format, or cannot be parsed.
+            ETLForgeError: If `schema_path` points to a file that is not
+                found, has an unsupported extension, or if the file cannot
+                be parsed due to syntax errors or I/O issues. Also raised
+                if the loaded schema fails any validation checks.
         """
         if isinstance(schema_path, dict):
             self.schema = schema_path
@@ -84,8 +90,15 @@ class DataGenerator:
         """
         Validates the loaded schema for correctness and completeness.
         
+        This internal method checks for the presence of required keys ('fields'),
+        ensures that field definitions are correct, and validates constraints
+        to prevent errors during data generation.
+
         Raises:
-            ETLForgeError: If the schema is invalid or missing required fields.
+            ETLForgeError: If the schema is empty, missing the 'fields' key,
+                contains duplicate field names, uses unsupported data types,
+                or has invalid configurations for `range`, `length`, `values`,
+                or `null_rate`.
         """
         if not self.schema:
             raise ETLForgeError("Schema is empty or None")
@@ -354,8 +367,10 @@ class DataGenerator:
             A pandas DataFrame containing the synthetic data.
 
         Raises:
-            ETLForgeError: If no schema has been loaded or if an unsupported
-                field type is encountered in the schema.
+            ETLForgeError: If no schema has been loaded, if an unsupported
+                field type is encountered, or if data generation fails for a
+                specific column (e.g., unable to generate enough unique values
+                for the given constraints).
         """
         if not self.schema:
             raise ETLForgeError("No schema loaded. Use load_schema() first.")

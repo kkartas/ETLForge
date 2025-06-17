@@ -1,5 +1,11 @@
 # ETLForge
 
+[![build](https://github.com/kkartas/etl-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/kkartas/etl-forge/actions/workflows/ci.yml)
+[![docs](https://readthedocs.org/projects/etl-forge/badge/?version=latest)](https://etl-forge.readthedocs.io/en/latest/)
+[![PyPI version](https://badge.fury.io/py/etl-forge.svg)](https://badge.fury.io/py/etl-forge)
+[![codecov](https://codecov.io/gh/kkartas/etl-forge/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/kkartas/etl-forge)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A Python library for generating synthetic test data and validating ETL outputs. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
 
 ## Features
@@ -42,7 +48,7 @@ For development or latest features:
 ```bash
 git clone https://github.com/kkartas/etl-forge.git
 cd etl-forge
-pip install -e .
+pip install -e ".[dev]"
 ```
 
 ### Dependencies
@@ -370,33 +376,20 @@ Run with coverage:
 pytest tests/ --cov=etl_forge --cov-report=html
 ```
 
-## Contributing
+## Performance
 
-Contributions are welcome! Please see the [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
-We adhere to a [Code of Conduct](CODE_OF_CONDUCT.md) for all participants.
-
-## Authors and Citation
-
-This project is developed and maintained by Kyriakos Kartas.
-
-If you use ETLForge in your research, please cite it using the following metadata from [CITATION.cff](CITATION.cff).
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) file for details.
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for a history of changes.
-
-## Documentation
-
-Full HTML documentation, including a user guide and a complete API reference, can be built locally:
+Performance benchmarks are available in [`BENCHMARKS.md`](BENCHMARKS.md). To reproduce them, run:
 
 ```bash
-cd docs
-make html
+python benchmark.py
 ```
 
-Then open `docs/build/html/index.html` in your browser.
+Then, to visualize the results: 
+
+```bash
+python plot_benchmark.py
+```
+
+## Citation
+
+If you use `ETLForge` in your research or work, please cite it using the information in `CITATION.cff`.

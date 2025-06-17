@@ -6,7 +6,6 @@
 
 # Documentation
 /docs/build/
-/docs/source/api.rst
 
 # Coverage
 /coverage.xml

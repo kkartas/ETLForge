@@ -23,7 +23,7 @@ The following benchmarks were run on the system detailed below:
 
 The results show that both generation and validation times scale linearly with the number of rows.
 
-![ETLForge Performance Plot](benchmark_plot.png)
+![ETLForge Performance Plot](paper/benchmark_plot.png)
 
 | Rows        | Generation Time (s) | Validation Time (s) |
 |-------------|-----------------------|-----------------------|
@@ -36,12 +36,12 @@ The results show that both generation and validation times scale linearly with t
 To reproduce these benchmarks, run the following command from the root of the repository:
 
 ```bash
-pip install -r requirements.txt
 pip install -e ".[dev]"
 python benchmark.py
 ```
 
 To reproduce the plot from the generated `benchmark_results.csv`:
+
 ```bash
 python plot_benchmark.py
-``` 
+```
