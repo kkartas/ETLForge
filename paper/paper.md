@@ -39,14 +39,14 @@ Existing libraries focus on either data generation (e.g., *Faker* [@Faker2024]) 
 
 The landscape of data generation and validation tools shows clear specialization but lacks integration:
 
-| Capability | ETLForge | Faker [@Faker2024] | Great Expectations [@GreatExpectations2023] | pandera [@Pandera2023] | Cerberus [@Cerberus2024] |
-|------------|----------|-------|--------------------|---------|---------|
-| Schema-driven generation | ✔ | Manual scripting | ✗ | ✗ | ✗ |
-| Schema-driven validation | ✔ | ✗ | ✔ | ✔ | ✔ |
-| Single schema for both   | ✔ | ✗ | ✗ | ✗ | ✗ |
+| Capability | ETLForge | Faker | Great Expectations | pandera | Cerberus |
+|------------|----------|-------|-------------------|---------|----------|
+| Schema-driven generation | Yes | Manual scripting | No | No | No |
+| Schema-driven validation | Yes | No | Yes | Yes | Yes |
+| Single schema for both   | Yes | No | No | No | No |
 | CLI & Python API         | Both | CLI only | Both | Python only | Python only |
-| YAML/JSON schema support | ✔ | ✗ | Python/YAML | Python only | Python only |
-| Lightweight dependencies | ✔ (6 core) | ✔ (1 core) | ✗ (20+ deps) | ✔ (5 core) | ✔ (0 core) |
+| YAML/JSON schema support | Yes | No | Python/YAML | Python only | Python only |
+| Lightweight dependencies | Yes (6 core) | Yes (1 core) | No (20+ deps) | Yes (5 core) | Yes (0 core) |
 
 **Performance characteristics**: ETLForge generates 10,000 rows in ~6 seconds and validates 100,000 rows in ~2 seconds on standard hardware, making it suitable for CI/CD integration where Great Expectations may be too heavyweight for simple validation tasks.
 
