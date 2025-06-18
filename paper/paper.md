@@ -1,5 +1,5 @@
 ---
-Title: 'ETLForge: A unified framework for synthetic test-data generation and ETL validation'
+title: 'ETLForge: A unified framework for synthetic test-data generation and ETL validation'
 tags:
   - Python
   - ETL
