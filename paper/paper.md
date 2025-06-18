@@ -48,7 +48,7 @@ The landscape of data generation and validation tools shows clear specialization
 | YAML/JSON schema support | ✔ | ✗ | Python/YAML | Python only | Python only |
 | Lightweight dependencies | ✔ (6 core) | ✔ (1 core) | ✗ (20+ deps) | ✔ (5 core) | ✔ (0 core) |
 
-**Performance characteristics**: ETLForge generates 10,000 rows in ~0.5 seconds and validates 100,000 rows in ~2 seconds on standard hardware, making it suitable for CI/CD integration where Great Expectations may be too heavyweight for simple validation tasks.
+**Performance characteristics**: ETLForge generates 10,000 rows in ~6 seconds and validates 100,000 rows in ~2 seconds on standard hardware, making it suitable for CI/CD integration where Great Expectations may be too heavyweight for simple validation tasks.
 
 **Limitations compared to existing tools**: Unlike Great Expectations, ETLForge does not provide data profiling, drift detection, or advanced statistical validations. Unlike pandera, it lacks integration with type checkers and advanced pandas DataFrame validation. ETLForge prioritizes simplicity and schema consistency over advanced features.
 
