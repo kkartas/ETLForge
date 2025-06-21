@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![status](https://joss.theoj.org/papers/f98ffb03b77e3023e1710d6e77d9a9bb/status.svg)](https://joss.theoj.org/papers/f98ffb03b77e3023e1710d6e77d9a9bb)
 
-A Python library for generating synthetic test data and validating ETL outputs. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality.
+A Python library for generating synthetic test data and validating ETL (Extract, Transform, Load) outputs. ETL processes are fundamental data workflows that extract data from various sources, transform it according to business rules, and load it into target systems like data warehouses or databases. ETLForge provides both command-line tools and library functions to help you create realistic test datasets and validate data quality throughout your ETL pipelines.
 
 ## Features
 
