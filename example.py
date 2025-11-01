@@ -4,6 +4,17 @@ ETLForge Example - Complete workflow demonstration
 
 This example shows how to use ETLForge for synthetic data generation
 and validation in a typical ETL testing scenario.
+
+NOTE: If running from a cloned repository and you encounter:
+      'ModuleNotFoundError: No module named yaml'
+      
+      Solution 1 - Install in development mode:
+        pip install -e .
+      
+      Solution 2 - Use PyPI package from outside the repo:
+        pip install etl-forge[faker]
+        curl -O https://raw.githubusercontent.com/kkartas/ETLForge/main/example.py
+        python example.py
 """
 
 from etl_forge import DataGenerator, DataValidator

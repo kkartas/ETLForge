@@ -1,0 +1,14 @@
+# Core dependencies for ETLForge
+# Use this file when working with the local development version
+# For normal use, install via: pip install etl-forge
+
+pandas>=1.3.0
+pyyaml>=5.4.0
+click>=8.0.0
+openpyxl>=3.0.0
+numpy>=1.21.0
+psutil>=5.9.0
+
+# Optional: Uncomment for Faker support
+# faker>=15.0.0
+

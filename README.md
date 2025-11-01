@@ -436,6 +436,41 @@ Then, to visualize the results:
 python plot_benchmark.py
 ```
 
+## Troubleshooting
+
+### Running Examples from Cloned Repository
+
+If you've cloned the repository and encounter `ModuleNotFoundError: No module named 'yaml'` when running `python example.py`, this is because Python is importing the local `etl_forge` module instead of the installed package.
+
+**Solution 1: Install in Development Mode** (if you want to modify the source code)
+```bash
+git clone https://github.com/kkartas/ETLForge.git
+cd ETLForge
+pip install -e .  # Or pip install -e ".[faker]" for full features
+python example.py
+```
+
+**Solution 2: Use the PyPI Package** (if you just want to run the example)
+```bash
+# Install from PyPI
+pip install etl-forge[faker]
+
+# Download and run the example from outside the repository
+curl -O https://raw.githubusercontent.com/kkartas/ETLForge/main/example.py
+python example.py
+```
+
+### Common Issues
+
+**Issue**: `etl-forge` command not found
+- **Solution**: Use `python -m etl_forge.cli` instead, or add Python's Scripts directory to PATH
+
+**Issue**: Faker templates not working
+- **Solution**: Install with faker support: `pip install etl-forge[faker]`
+
+**Issue**: Excel files not supported
+- **Solution**: The `openpyxl` dependency should be installed automatically. Try: `pip install openpyxl`
+
 ## Citation
 
 If you use `ETLForge` in your research or work, please cite it using the information in `CITATION.cff`.
