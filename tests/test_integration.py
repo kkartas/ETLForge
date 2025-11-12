@@ -223,7 +223,7 @@ class TestCLIIntegration:
         result = self.runner.invoke(cli, ["--version"])
 
         assert result.exit_code == 0
-        assert "1.0.3" in result.output
+        assert "1.0.4" in result.output
 
     def test_cli_help(self):
         """Test the help command."""
