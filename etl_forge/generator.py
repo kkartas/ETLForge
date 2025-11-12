@@ -322,7 +322,7 @@ class DataGenerator:
         else:
             # Generate random strings
             if unique:
-                values_set: set[str] = set()
+                values_set = set()
                 max_attempts = (
                     num_rows * 100
                 )  # Prevent infinite loops for unique strings
