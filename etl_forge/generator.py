@@ -276,17 +276,45 @@ class DataGenerator:
 
         if faker_template and self.faker:
             # Use Faker template
-            for _ in range(num_rows):
-                try:
-                    value = getattr(self.faker, faker_template)()
-                    values.append(str(value))
-                except AttributeError:
-                    # Fallback to random string if faker method doesn't exist
-                    length = random.randint(min_length, max_length)
-                    value = "".join(
-                        random.choices(string.ascii_letters + string.digits, k=length)
+            if unique:
+                # Enforce uniqueness with Faker templates
+                values_set: set[str] = set()
+                max_attempts = num_rows * 100
+                attempts = 0
+                while len(values_set) < num_rows and attempts < max_attempts:
+                    try:
+                        value = str(getattr(self.faker, faker_template)())
+                        values_set.add(value)
+                    except AttributeError:
+                        # Fallback to random string if faker method doesn't exist
+                        length = random.randint(min_length, max_length)
+                        value = "".join(
+                            random.choices(string.ascii_letters + string.digits, k=length)
+                        )
+                        values_set.add(value)
+                    attempts += 1
+
+                if len(values_set) < num_rows:
+                    raise ETLForgeError(
+                        f"Could not generate {num_rows} unique values for column '{field_config['name']}' "
+                        f"using faker template '{faker_template}' after {max_attempts} attempts. "
+                        f"The faker method may not provide enough variety for this dataset size."
                     )
-                    values.append(value)
+                values = list(values_set)
+                random.shuffle(values)
+            else:
+                # Non-unique Faker values
+                for _ in range(num_rows):
+                    try:
+                        value = getattr(self.faker, faker_template)()
+                        values.append(str(value))
+                    except AttributeError:
+                        # Fallback to random string if faker method doesn't exist
+                        length = random.randint(min_length, max_length)
+                        value = "".join(
+                            random.choices(string.ascii_letters + string.digits, k=length)
+                        )
+                        values.append(value)
         else:
             # Generate random strings
             if unique:
