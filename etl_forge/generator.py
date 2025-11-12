@@ -289,7 +289,9 @@ class DataGenerator:
                         # Fallback to random string if faker method doesn't exist
                         length = random.randint(min_length, max_length)
                         value = "".join(
-                            random.choices(string.ascii_letters + string.digits, k=length)
+                            random.choices(
+                                string.ascii_letters + string.digits, k=length
+                            )
                         )
                         values_set.add(value)
                     attempts += 1
@@ -312,7 +314,9 @@ class DataGenerator:
                         # Fallback to random string if faker method doesn't exist
                         length = random.randint(min_length, max_length)
                         value = "".join(
-                            random.choices(string.ascii_letters + string.digits, k=length)
+                            random.choices(
+                                string.ascii_letters + string.digits, k=length
+                            )
                         )
                         values.append(value)
         else:
