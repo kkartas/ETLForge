@@ -76,12 +76,16 @@ class TestCLIErrorHandling:
 
         try:
             result = self.runner.invoke(
-                cli, ["check", "--input", data_path, "--schema", schema_path, "--verbose"]
+                cli,
+                ["check", "--input", data_path, "--schema", schema_path, "--verbose"],
             )
 
             # Should show detailed errors
             assert "Detailed Errors" in result.output
-            assert "duplicate" in result.output.lower() or "unique" in result.output.lower()
+            assert (
+                "duplicate" in result.output.lower()
+                or "unique" in result.output.lower()
+            )
             assert result.exit_code == 1  # Should fail validation
         finally:
             os.unlink(schema_path)
@@ -123,7 +127,8 @@ class TestCLIErrorHandling:
 
         try:
             result = self.runner.invoke(
-                cli, ["check", "--input", data_path, "--schema", schema_path, "--verbose"]
+                cli,
+                ["check", "--input", data_path, "--schema", schema_path, "--verbose"],
             )
 
             # Should show truncation message
@@ -159,7 +164,8 @@ class TestCLIErrorHandling:
 
             assert result.exit_code != 0
             # Click validates files before our code runs
-            assert "does not exist" in result.output or "File not found" in result.output
+            assert (
+                "does not exist" in result.output or "File not found" in result.output
+            )
         finally:
             os.unlink(schema_path)
-

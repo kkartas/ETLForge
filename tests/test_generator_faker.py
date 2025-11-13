@@ -173,4 +173,3 @@ class TestFakerIntegration:
         # Non-null values should be unique
         non_null_emails = df["email"].dropna()
         assert non_null_emails.nunique() == len(non_null_emails)
-
