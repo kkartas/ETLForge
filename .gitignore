@@ -157,3 +157,6 @@ update_version.py
 
 # GitHub Actions - DO track these
 !.github/
+
+# uv
+uv.lock
