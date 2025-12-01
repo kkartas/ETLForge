@@ -49,38 +49,6 @@ class ValidationResult:
             self.invalid_rows.append(row_idx)
 
 
-class ValidationError:
-    """Represents a single validation error."""
-
-    def __init__(
-        self,
-        column: str,
-        error_type: str,
-        row_idx: Optional[int] = None,
-        message: Optional[str] = None,
-    ):
-        """
-        Initialize a validation error.
-
-        Args:
-            column: The column name where the error occurred.
-            error_type: The type of validation error.
-            row_idx: The row index where the error occurred (if applicable).
-            message: A descriptive error message.
-        """
-        self.column = column
-        self.error_type = error_type
-        self.row_idx = row_idx
-        self.message = message
-
-    def __str__(self):
-        """String representation of the validation error."""
-        if self.row_idx is not None:
-            return f"Column '{self.column}', Row {self.row_idx}: {self.error_type} - {self.message}"
-        else:
-            return f"Column '{self.column}': {self.error_type} - {self.message}"
-
-
 class DataValidator:
     """
     Validates tabular data against a declarative schema.
@@ -102,7 +70,6 @@ class DataValidator:
             ETLForgeError: If the schema file cannot be found or parsed.
         """
         self.schema: Dict[str, Any] = {}
-        self.errors: List[ValidationError] = []
 
         if schema_path:
             self.load_schema(schema_path)
@@ -193,17 +160,6 @@ class DataValidator:
                     f"Field '{field_name}' has unsupported type '{field_type}'. "
                     f"Supported types: {', '.join(sorted(supported_types))}"
                 )
-
-    def _add_error(
-        self,
-        column: str,
-        error_type: str,
-        row_idx: Optional[int] = None,
-        message: Optional[str] = None,
-    ):
-        """Add a validation error to the errors list."""
-        error = ValidationError(column, error_type, row_idx, message)
-        self.errors.append(error)
 
     def load_data(self, data_path: Union[str, Path]) -> pd.DataFrame:
         """
