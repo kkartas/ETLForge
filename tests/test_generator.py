@@ -126,6 +126,27 @@ class TestDataGenerator:
         # Basic date format check
         assert all(len(v) == 10 and v[4] == "-" and v[7] == "-" for v in values)
 
+    def test_generate_date_column_custom_format(self):
+        """Test date column generation with custom format."""
+        generator = DataGenerator(self.test_schema)
+        # Test with US date format (MM/DD/YYYY)
+        field_config = {
+            "name": "custom_date",
+            "type": "date",
+            "range": {"start": "01/15/2020", "end": "12/31/2023"},
+            "format": "%m/%d/%Y"
+        }
+        values = generator._generate_date_column(field_config, 50)
+        
+        assert len(values) == 50
+        assert all(isinstance(v, str) for v in values)
+        # Verify format matches MM/DD/YYYY
+        for v in values:
+            month, day, year = v.split("/")
+            assert 1 <= int(month) <= 12
+            assert 1 <= int(day) <= 31
+            assert 2020 <= int(year) <= 2023
+
     def test_generate_data(self):
         """Test full data generation."""
         generator = DataGenerator(self.test_schema)

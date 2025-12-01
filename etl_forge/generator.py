@@ -369,8 +369,8 @@ class DataGenerator:
         nullable = field_config.get("nullable", False)
         null_rate = field_config.get("null_rate", 0.1) if nullable else 0
 
-        start_dt = datetime.strptime(start_date, "%Y-%m-%d")
-        end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+        start_dt = datetime.strptime(start_date, date_format)
+        end_dt = datetime.strptime(end_date, date_format)
 
         values: List[Optional[str]] = []
         for _ in range(num_rows):
