@@ -134,10 +134,10 @@ class TestDataGenerator:
             "name": "custom_date",
             "type": "date",
             "range": {"start": "01/15/2020", "end": "12/31/2023"},
-            "format": "%m/%d/%Y"
+            "format": "%m/%d/%Y",
         }
         values = generator._generate_date_column(field_config, 50)
-        
+
         assert len(values) == 50
         assert all(isinstance(v, str) for v in values)
         # Verify format matches MM/DD/YYYY
