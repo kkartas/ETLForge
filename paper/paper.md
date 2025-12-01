@@ -33,7 +33,7 @@ Extract-Transform-Load (ETL) processes are critical for data-driven organization
 2. **Maintenance overhead**: Duplicate schema definitions require synchronized updates, increasing development time and error potential [@Dasu2003].
 3. **Testing gaps**: Inconsistent test data may not exercise edge cases that production validation catches, leading to false confidence [@Loshin2010].
 
-Existing libraries focus on either data generation (e.g., *Faker* [@Faker2024]) or validation (e.g., *Great Expectations* [@GreatExpectations2023], *pandera* [@Pandera2023]). Because these tools are independent, engineers must maintain **parallel schemas**—one for generation, one for validation—leading to drift and missed bugs. ETLForge unifies both stages under a single source of truth, reducing maintenance effort and improving test robustness. Its small dependency footprint (six runtime packages) fits comfortably inside continuous-integration pipelines.
+Most existing libraries focus primarily on either data generation (e.g., *Faker* [@Faker2024]) or validation (e.g., *Great Expectations* [@GreatExpectations2023]). While some tools like *pandera* [@Pandera2023] support both generation and validation, they typically use separate, independently-defined schemas for each task. This means engineers must maintain **parallel schemas**—one for generation, one for validation—leading to drift and missed bugs. ETLForge unifies both stages under a single source of truth, reducing maintenance effort and improving test robustness. Its small dependency footprint (six runtime packages) fits comfortably inside continuous-integration pipelines.
 
 ## State of the field
 
@@ -41,10 +41,10 @@ The landscape of data generation and validation tools shows clear specialization
 
 | Capability | ETLForge | Faker | Great Expectations | pandera | Cerberus |
 |------------|----------|-------|-------------------|---------|----------|
-| Schema-driven generation | Yes | Manual scripting | No | No | No |
+| Schema-driven generation | Yes | Manual scripting | No | Yes | No |
 | Schema-driven validation | Yes | No | Yes | Yes | Yes |
-| Single schema for both   | Yes | No | No | No | No |
-| CLI & Python API         | Both | CLI only | Both | Python only | Python only |
+| Single schema for both   | Yes | No | No | Yes | No |
+| CLI & Python API         | Both | Both | Both | Python only | Python only |
 | YAML/JSON schema support | Yes | No | Python/YAML | Python only | Python only |
 | Lightweight dependencies | Yes (6 core) | Yes (1 core) | No (20+ deps) | Yes (5 core) | Yes (0 core) |
 
