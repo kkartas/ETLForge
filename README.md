@@ -54,6 +54,12 @@ cd etl-forge
 pip install -e ".[dev]"
 ```
 
+### Run Tests with uv
+```bash
+uv sync --extra dev
+uv run pytest
+```
+
 ### Dependencies
 **Core dependencies** (6 total, automatically installed):
 - `pandas>=1.3.0` - Data manipulation and analysis
