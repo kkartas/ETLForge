@@ -107,24 +107,31 @@ class TestFakerIntegration:
 
     def test_unique_faker_insufficient_variety(self):
         """Test error when Faker cannot generate enough unique values."""
+        # Use a non-existent faker method to trigger the fallback,
+        # but set max_attempts low enough to fail
         schema = {
             "fields": [
                 {
-                    "name": "bool_str",
+                    "name": "limited_str",
                     "type": "string",
                     "unique": True,
-                    "faker_template": "boolean",  # Only generates True/False
+                    "faker_template": "nonexistent_method_that_will_fallback",
+                    "length": {
+                        "min": 1,
+                        "max": 2,
+                    },  # Very short strings, limited variety
                 }
             ]
         }
         generator = DataGenerator(schema)
 
-        # Should fail - can't generate 100 unique boolean strings
+        # Should fail - can't generate 10000 unique 1-2 character strings
+        # Max possible: 62 (1-char) + 62*62 (2-char) = 3906 unique values
         with pytest.raises(
             ETLForgeError,
             match="Could not generate .* unique values .* using faker template",
         ):
-            generator.generate_data(100)
+            generator.generate_data(5000)
 
     def test_faker_without_faker_installed(self):
         """Test Faker template when faker is not available."""
