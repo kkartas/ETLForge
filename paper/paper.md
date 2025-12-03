@@ -15,7 +15,7 @@ authors:
 affiliations:
   - name: Independent Researcher
     index: 1
-date: 18 July 2025
+date: 3 December 2025
 bibliography: paper.bib
 paper_type: software
 version: 1.0.4
@@ -33,7 +33,7 @@ Extract-Transform-Load (ETL) processes are critical for data-driven organization
 2. **Maintenance overhead**: Duplicate schema definitions require synchronized updates, increasing development time and error potential [@Dasu2003].
 3. **Testing gaps**: Inconsistent test data may not exercise edge cases that production validation catches, leading to false confidence [@Loshin2010].
 
-Most existing libraries focus primarily on either data generation (e.g., *Faker* [@Faker2024]) or validation (e.g., *Great Expectations* [@GreatExpectations2023]). While some tools like *pandera* [@Pandera2023] support both generation and validation, they typically use separate, independently-defined schemas for each task. This means engineers must maintain **parallel schemas**—one for generation, one for validation—leading to drift and missed bugs. ETLForge unifies both stages under a single source of truth, reducing maintenance effort and improving test robustness. Its small dependency footprint (six runtime packages) fits comfortably inside continuous-integration pipelines.
+Most existing libraries focus primarily on either data generation (e.g., *Faker* [@Faker2024]) or validation (e.g., *Great Expectations* [@GreatExpectations2023]). While some tools like *pandera* [@Pandera2023] support both validation and data synthesis from the same schema (for example, via example-generation APIs), they are primarily designed around programmatic, Python-centric workflows rather than a declarative, file-based schema shared between a generator and a validator. In many teams this still leads to effectively **parallel specifications** for test data and validation rules, increasing the risk of drift and missed bugs. ETLForge unifies both stages under a single source of truth, reducing maintenance effort and improving test robustness. Its small dependency footprint (six runtime packages) fits comfortably inside continuous-integration pipelines.
 
 ## State of the field
 
@@ -48,7 +48,7 @@ The landscape of data generation and validation tools shows clear specialization
 | YAML/JSON schema support | Yes | No | Python/YAML | Python only | Python only |
 | Lightweight dependencies | Yes (6 core) | Yes (1 core) | No (20+ deps) | Yes (5 core) | Yes (0 core) |
 
-This comparison highlights that while several mature tools exist for data validation (Great Expectations, pandera, Cerberus) and Faker provides excellent data generation capabilities, none integrate both functions under a single schema definition. ETLForge is the only tool in this comparison that supports schema-driven generation *and* validation using the same configuration file, eliminating the need to maintain parallel schema definitions. Great Expectations offers the most comprehensive validation features but requires substantially more dependencies, making it less suitable for lightweight CI/CD environments. Faker requires manual scripting to define generation patterns rather than declarative schemas. To our knowledge, no existing open-source project provides an integrated, schema-first workflow covering both generation and validation with a unified configuration format.
+This comparison highlights that while several mature tools exist for data validation (Great Expectations, pandera, Cerberus) and Faker provides excellent data generation capabilities, they differ in how tightly generation and validation are integrated. Both Great Expectations and pandera can drive data synthesis from validation-oriented specifications (for example, pandera's `schema.example` interface), but these workflows are typically embedded in Python code rather than in a lightweight, declarative configuration file intended to be shared across teams and CI/CD environments. ETLForge instead centers a YAML/JSON schema as the primary artifact that drives both generation *and* validation, reducing the need for parallel, hand-maintained schemas or bespoke test scripts. Great Expectations offers the most comprehensive validation features but requires substantially more dependencies, making it less suitable for very lightweight CI/CD tasks. Faker requires manual scripting to define generation patterns rather than declarative schemas. ETLForge's contribution is therefore to emphasize a configuration-first, file-based workflow that couples synthetic test-data generation and ETL validation under the same external schema, rather than to claim a capability that no other project can approximate.
 
 ## Software description
 
@@ -109,7 +109,7 @@ These performance characteristics make ETLForge suitable for integration into co
 
 ## Discussion
 
-ETLForge addresses a specific gap in the ETL testing ecosystem by unifying data generation and validation under a single schema, but makes deliberate trade-offs compared to specialized tools. Unlike Great Expectations [@GreatExpectations2023], ETLForge does not provide data profiling, drift detection, or advanced statistical validations such as distributional analysis. Unlike pandera [@Pandera2023], it lacks integration with Python type checkers and advanced pandas DataFrame validation patterns. ETLForge prioritizes simplicity and schema consistency over advanced analytical features, making it particularly well-suited for teams that need synchronized test data generation and validation without the complexity of enterprise-grade data quality platforms.
+ETLForge addresses a specific gap in the ETL testing ecosystem by unifying data generation and validation under a single schema, but makes deliberate trade-offs compared to specialized tools. Unlike Great Expectations [@GreatExpectations2023], ETLForge does not provide data profiling, drift detection, or advanced statistical validations such as distributional analysis. Unlike pandera [@Pandera2023], it lacks integration with Python type checkers and advanced pandas DataFrame validation patterns, and it offers a simpler, configuration-first interface instead of pandera's rich, code-centric API for validation and example data synthesis. ETLForge prioritizes simplicity and schema consistency over advanced analytical features, making it particularly well-suited for teams that need synchronized test data generation and validation without the complexity of enterprise-grade data quality platforms.
 
 The framework currently has several technical limitations that constrain its applicability:
 
