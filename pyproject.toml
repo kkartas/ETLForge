@@ -44,6 +44,7 @@ dev = [
     "coverage>=6.0",
     "sphinx>=4.0.0",
     "sphinx-rtd-theme>=1.0.0",
+    "faker>=15.0.0"
 ]
 
 [project.urls]
@@ -60,3 +61,4 @@ license-files = []
 
 [tool.setuptools.dynamic]
 version = {attr = "etl_forge.__version__"} 
+
