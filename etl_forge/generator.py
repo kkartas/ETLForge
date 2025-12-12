@@ -53,7 +53,7 @@ class DataGenerator:
         This method supports both file paths (YAML or JSON) and direct
         dictionary objects as input. It orchestrates the loading and
         subsequent validation of the schema.
-        
+
         The schema can be in ETLForge native format, Frictionless Table Schema,
         or JSON Schema format. The format is auto-detected and converted to
         ETLForge format if necessary.

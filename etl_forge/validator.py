@@ -78,7 +78,7 @@ class DataValidator:
     def load_schema(self, schema_path: Union[str, Path, dict]):
         """
         Loads a schema from a file path or a dictionary.
-        
+
         The schema can be in ETLForge native format, Frictionless Table Schema,
         or JSON Schema format. The format is auto-detected and converted to
         ETLForge format if necessary.
@@ -145,7 +145,6 @@ class DataValidator:
                     f"Field '{field_name}' has unsupported type '{field_type}'. "
                     f"Supported types: {', '.join(sorted(supported_types))}"
                 )
-
 
     def _validate_column_existence(self, df: pd.DataFrame, result: ValidationResult):
         """Validate that all required columns exist."""

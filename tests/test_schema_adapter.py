@@ -137,7 +137,7 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         assert len(result["fields"]) == 4
         assert result["fields"][0]["type"] == "int"
         assert result["fields"][1]["type"] == "string"
@@ -169,13 +169,13 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         id_field = result["fields"][0]
         assert id_field["nullable"] == False
         assert id_field["unique"] == True
         assert id_field["range"]["min"] == 1
         assert id_field["range"]["max"] == 1000
-        
+
         username_field = result["fields"][1]
         assert username_field["length"]["min"] == 3
         assert username_field["length"]["max"] == 20
@@ -194,7 +194,7 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         assert result["fields"][0]["type"] == "category"
         assert result["fields"][0]["values"] == ["active", "inactive", "pending"]
 
@@ -206,7 +206,7 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         assert result["fields"][0]["type"] == "category"
         assert result["fields"][0]["values"] == ["true", "false"]
 
@@ -218,7 +218,7 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         assert result["fields"][0]["type"] == "date"
         assert result["fields"][0]["format"] == "%Y-%m-%d"
 
@@ -230,7 +230,7 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         assert result["fields"][0]["type"] == "int"
 
     def test_convert_preserves_description(self):
@@ -245,7 +245,7 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.convert(frictionless)
-        
+
         assert result["fields"][0]["_description"] == "Primary identifier"
 
     def test_convert_rejects_unsupported_types(self):
@@ -303,13 +303,13 @@ class TestFrictionlessAdapter:
             ]
         }
         result = FrictionlessAdapter.to_frictionless(etl_schema)
-        
+
         assert result["fields"][0]["type"] == "integer"
         assert result["fields"][0]["constraints"]["required"] == True
         assert result["fields"][0]["constraints"]["unique"] == True
         assert result["fields"][0]["constraints"]["minimum"] == 1
         assert result["fields"][0]["constraints"]["maximum"] == 100
-        
+
         assert result["fields"][1]["constraints"]["enum"] == ["active", "inactive"]
 
 
@@ -328,7 +328,7 @@ class TestJsonSchemaAdapter:
             "required": ["id"],
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         fields_by_name = {f["name"]: f for f in result["fields"]}
         assert fields_by_name["id"]["type"] == "int"
         assert fields_by_name["id"]["nullable"] == False
@@ -354,7 +354,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         fields_by_name = {f["name"]: f for f in result["fields"]}
         assert fields_by_name["age"]["range"]["min"] == 0
         assert fields_by_name["age"]["range"]["max"] == 120
@@ -374,7 +374,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         assert result["fields"][0]["length"]["min"] == 3
         assert result["fields"][0]["length"]["max"] == 20
 
@@ -390,7 +390,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         assert result["fields"][0]["type"] == "category"
         assert result["fields"][0]["values"] == ["active", "inactive", "pending"]
 
@@ -403,7 +403,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         assert result["fields"][0]["type"] == "category"
         assert result["fields"][0]["values"] == ["true", "false"]
 
@@ -417,7 +417,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         fields_by_name = {f["name"]: f for f in result["fields"]}
         assert fields_by_name["created"]["type"] == "date"
         assert fields_by_name["created"]["format"] == "%Y-%m-%d"
@@ -433,7 +433,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         assert result["fields"][0]["faker_template"] == "email"
 
     def test_convert_nullable_type_array(self):
@@ -445,7 +445,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         assert result["fields"][0]["type"] == "string"
         assert result["fields"][0]["nullable"] == True
 
@@ -462,7 +462,7 @@ class TestJsonSchemaAdapter:
             },
         }
         result = JsonSchemaAdapter.convert(json_schema)
-        
+
         assert result["fields"][0]["_title"] == "User ID"
         assert result["fields"][0]["_description"] == "Unique identifier for the user"
 
@@ -528,7 +528,7 @@ class TestJsonSchemaAdapter:
             ]
         }
         result = JsonSchemaAdapter.to_jsonschema(etl_schema)
-        
+
         assert result["$schema"] == "https://json-schema.org/draft/2020-12/schema"
         assert result["type"] == "object"
         assert "id" in result["required"]
@@ -560,7 +560,7 @@ class TestIntegrationWithGeneratorValidator:
         }
         generator = DataGenerator(frictionless_schema)
         df = generator.generate_data(10)
-        
+
         assert len(df) == 10
         assert "id" in df.columns
         assert "status" in df.columns
@@ -586,7 +586,7 @@ class TestIntegrationWithGeneratorValidator:
         }
         generator = DataGenerator(json_schema)
         df = generator.generate_data(10)
-        
+
         assert len(df) == 10
         assert "user_id" in df.columns
         assert "role" in df.columns
@@ -596,7 +596,7 @@ class TestIntegrationWithGeneratorValidator:
     def test_validator_with_frictionless_schema(self):
         """Test DataValidator works with Frictionless Table Schema."""
         import pandas as pd
-        
+
         frictionless_schema = {
             "fields": [
                 {
@@ -610,21 +610,23 @@ class TestIntegrationWithGeneratorValidator:
                 },
             ]
         }
-        
-        df = pd.DataFrame({
-            "id": [1, 2, 3],
-            "name": ["Alice", "Bob", "Charlie"],
-        })
-        
+
+        df = pd.DataFrame(
+            {
+                "id": [1, 2, 3],
+                "name": ["Alice", "Bob", "Charlie"],
+            }
+        )
+
         validator = DataValidator(frictionless_schema)
         result = validator.validate(df)
-        
+
         assert result.is_valid
 
     def test_validator_with_jsonschema(self):
         """Test DataValidator works with JSON Schema."""
         import pandas as pd
-        
+
         json_schema = {
             "type": "object",
             "properties": {
@@ -633,15 +635,17 @@ class TestIntegrationWithGeneratorValidator:
             },
             "required": ["id"],
         }
-        
-        df = pd.DataFrame({
-            "id": [1, 2, 3],
-            "name": ["Alice", "Bob", "Charlie"],
-        })
-        
+
+        df = pd.DataFrame(
+            {
+                "id": [1, 2, 3],
+                "name": ["Alice", "Bob", "Charlie"],
+            }
+        )
+
         validator = DataValidator(json_schema)
         result = validator.validate(df)
-        
+
         assert result.is_valid
 
     def test_roundtrip_frictionless_generation_validation(self):
@@ -660,13 +664,13 @@ class TestIntegrationWithGeneratorValidator:
                 },
             ]
         }
-        
+
         generator = DataGenerator(frictionless_schema)
         df = generator.generate_data(50)
-        
+
         validator = DataValidator(frictionless_schema)
         result = validator.validate(df)
-        
+
         assert result.is_valid
 
     def test_roundtrip_jsonschema_generation_validation(self):
@@ -690,11 +694,11 @@ class TestIntegrationWithGeneratorValidator:
             },
             "required": ["user_id", "role"],
         }
-        
+
         generator = DataGenerator(json_schema)
         df = generator.generate_data(50)
-        
+
         validator = DataValidator(json_schema)
         result = validator.validate(df)
-        
+
         assert result.is_valid

@@ -160,9 +160,7 @@ def check(input, schema, report, verbose):
                 )
                 raise click.Abort()
         except FileNotFoundError:
-            click.echo(
-                click.style(f"❌ File not found: {input}", fg="red"), err=True
-            )
+            click.echo(click.style(f"❌ File not found: {input}", fg="red"), err=True)
             raise click.Abort()
         except Exception as e:
             click.echo(

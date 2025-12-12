@@ -304,10 +304,10 @@ class TestDataValidator:
     def test_validate_with_non_dataframe(self):
         """Test that validate raises error for non-DataFrame input."""
         validator = DataValidator(self.test_schema)
-        
+
         with pytest.raises(ETLForgeError, match="Expected pandas DataFrame"):
             validator.validate("not a dataframe")
-        
+
         with pytest.raises(ETLForgeError, match="Expected pandas DataFrame"):
             validator.validate(None)
 
