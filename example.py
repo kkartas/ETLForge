@@ -82,7 +82,7 @@ def main():
     # 3. Validate the generated data (should pass)
     print("\n🔍 Validating generated data...")
     validator = DataValidator(schema)
-    result = validator.validate(output_file)
+    result = validator.validate(df)
     
     if result.is_valid:
         print("✅ Data validation passed!")
@@ -103,7 +103,7 @@ def main():
     corrupted_file = 'corrupted_data.csv'
     df_corrupted.to_csv(corrupted_file, index=False)
     
-    result_corrupted = validator.validate(corrupted_file)
+    result_corrupted = validator.validate(df_corrupted)
     print(f"❌ Corrupted data validation: {len(result_corrupted.errors)} errors found")
     
     # Show first few errors
@@ -112,7 +112,7 @@ def main():
     
     # 5. Generate validation report
     report_file = 'validation_errors.csv'
-    validator.validate_and_report(corrupted_file, report_file)
+    validator.validate_and_report(df_corrupted, report_file)
     print(f"📄 Detailed error report saved to: {report_file}")
     
     print("\n🎉 Example completed! Key benefits demonstrated:")

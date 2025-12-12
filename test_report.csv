@@ -1,0 +1,2 @@
+,a,validation_errors
+1,,null_value: Null value found in non-nullable column 'a'

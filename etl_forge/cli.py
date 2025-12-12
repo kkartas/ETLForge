@@ -135,17 +135,38 @@ def check(input, schema, report, verbose):
         # Load data into DataFrame
         input_path = Path(input)
         suffix = input_path.suffix.lower()
-        if suffix == ".csv":
-            df = pd.read_csv(input_path)
-        elif suffix in [".xlsx", ".xls"]:
-            df = pd.read_excel(input_path)
-        else:
+        try:
+            if suffix == ".csv":
+                df = pd.read_csv(input_path)
+            elif suffix in [".xlsx", ".xls"]:
+                try:
+                    df = pd.read_excel(input_path)
+                except ImportError:
+                    click.echo(
+                        click.style(
+                            "❌ Excel file support requires openpyxl. Install it with: pip install openpyxl",
+                            fg="red",
+                        ),
+                        err=True,
+                    )
+                    raise click.Abort()
+            else:
+                click.echo(
+                    click.style(
+                        f"❌ Unsupported file format: {suffix}. Supported formats: .csv, .xlsx, .xls",
+                        fg="red",
+                    ),
+                    err=True,
+                )
+                raise click.Abort()
+        except FileNotFoundError:
             click.echo(
-                click.style(
-                    f"❌ Unsupported file format: {suffix}. Supported formats: .csv, .xlsx, .xls",
-                    fg="red",
-                ),
-                err=True,
+                click.style(f"❌ File not found: {input}", fg="red"), err=True
+            )
+            raise click.Abort()
+        except Exception as e:
+            click.echo(
+                click.style(f"❌ Error loading data file: {e}", fg="red"), err=True
             )
             raise click.Abort()
 

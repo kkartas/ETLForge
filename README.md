@@ -61,11 +61,10 @@ uv run pytest
 ```
 
 ### Dependencies
-**Core dependencies** (6 total, automatically installed):
+**Core dependencies** (5 total, automatically installed):
 - `pandas>=1.3.0` - Data manipulation and analysis
 - `pyyaml>=5.4.0` - YAML parsing for schema files
 - `click>=8.0.0` - Command-line interface framework
-- `openpyxl>=3.0.0` - Excel file support
 - `numpy>=1.21.0` - Numerical computing
 - `psutil>=5.9.0` - System monitoring for benchmarks
 
@@ -73,6 +72,9 @@ uv run pytest
 ```bash
 # For realistic data generation using Faker templates
 pip install etl-forge[faker]
+
+# For Excel file support in CLI (required for reading/writing Excel files)
+pip install etl-forge[excel]
 
 # For development (testing, linting, documentation)
 pip install etl-forge[dev]
@@ -133,8 +135,10 @@ df = generator.generate_data(1000)
 generator.save_data(df, 'customer_test_data.csv')
 
 # Validate with the same schema
+import pandas as pd
 validator = DataValidator(schema)
-result = validator.validate('customer_test_data.csv')
+df = pd.read_csv('customer_test_data.csv')
+result = validator.validate(df)
 print(f"Validation passed: {result.is_valid}")
 ```
 
@@ -204,9 +208,11 @@ python -m etl_forge.cli check --input sample.csv --schema schema.yaml --report i
 **Python Library:**
 ```python
 from etl_forge import DataValidator
+import pandas as pd
 
 validator = DataValidator('schema.yaml')
-result = validator.validate('sample.csv')
+df = pd.read_csv('sample.csv')
+result = validator.validate(df)
 print(f"Validation passed: {result.is_valid}")
 ```
 
@@ -348,12 +354,16 @@ df = generator.generate_and_save(1000, 'output.xlsx', 'excel')
 
 ```python
 from etl_forge import DataValidator
+import pandas as pd
 
 # Initialize validator
 validator = DataValidator('schema.yaml')
 
+# Load data into DataFrame
+df = pd.read_csv('data.csv')
+
 # Validate data
-result = validator.validate('data.csv')
+result = validator.validate(df)
 
 # Check results
 if result.is_valid:
@@ -363,7 +373,7 @@ else:
     print(f"Invalid rows: {len(result.invalid_rows)}")
 
 # Generate report
-result = validator.validate_and_report('data.csv', 'errors.csv')
+result = validator.validate_and_report(df, 'errors.csv')
 
 # Print summary
 validator.print_validation_summary(result)
@@ -476,7 +486,7 @@ python example.py
 - **Solution**: Install with faker support: `pip install etl-forge[faker]`
 
 **Issue**: Excel files not supported
-- **Solution**: The `openpyxl` dependency should be installed automatically. Try: `pip install openpyxl`
+- **Solution**: Excel file support requires the optional `openpyxl` dependency. Install it with: `pip install etl-forge[excel]` or `pip install openpyxl`
 
 ## Citation
 

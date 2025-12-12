@@ -7,7 +7,7 @@ import numpy as np
 import yaml
 import json
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
 from .exceptions import ETLForgeError
 

@@ -26,13 +26,13 @@ dependencies = [
     "pandas>=1.3.0",
     "pyyaml>=5.4.0",
     "click>=8.0.0",
-    "openpyxl>=3.0.0",
     "numpy>=1.21.0",
     "psutil>=5.9.0",
 ]
 
 [project.optional-dependencies]
 faker = ["faker>=15.0.0"]
+excel = ["openpyxl>=3.0.0"]
 dev = [
     "pytest>=6.0.0",
     "pytest-cov>=2.0.0",
@@ -44,7 +44,8 @@ dev = [
     "coverage>=6.0",
     "sphinx>=4.0.0",
     "sphinx-rtd-theme>=1.0.0",
-    "faker>=15.0.0"
+    "faker>=15.0.0",
+    "openpyxl>=3.0.0"
 ]
 
 [project.urls]

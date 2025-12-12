@@ -301,36 +301,15 @@ class TestDataValidator:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
 
-    def test_load_data_csv(self):
-        """Test loading data from CSV."""
+    def test_validate_with_non_dataframe(self):
+        """Test that validate raises error for non-DataFrame input."""
         validator = DataValidator(self.test_schema)
-
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            self.valid_data.to_csv(f.name, index=False)
-            temp_path = f.name
-
-        try:
-            df = validator.load_data(temp_path)
-            assert isinstance(df, pd.DataFrame)
-            assert len(df) == 3
-            assert len(df.columns) == 5
-        finally:
-            if os.path.exists(temp_path):
-                os.unlink(temp_path)
-
-    def test_unsupported_file_format(self):
-        """Test handling of unsupported file formats."""
-        validator = DataValidator(self.test_schema)
-
-        with tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as f:
-            temp_path = f.name
-
-        try:
-            with pytest.raises(ETLForgeError, match="Unsupported data file format"):
-                validator.load_data(temp_path)
-        finally:
-            if os.path.exists(temp_path):
-                os.unlink(temp_path)
+        
+        with pytest.raises(ETLForgeError, match="Expected pandas DataFrame"):
+            validator.validate("not a dataframe")
+        
+        with pytest.raises(ETLForgeError, match="Expected pandas DataFrame"):
+            validator.validate(None)
 
 
 def test_validation_summary_output(capsys):
