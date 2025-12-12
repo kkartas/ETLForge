@@ -46,6 +46,7 @@ The landscape of data generation and validation tools shows clear specialization
 | Single schema for both   | Yes | No | No | Yes | No |
 | CLI & Python API         | Both | Both | Both | Python only | Python only |
 | YAML/JSON schema support | Yes | No | Python/YAML | Python only | Python only |
+| Frictionless/JSON Schema | Yes | No | No | No | No |
 | Lightweight dependencies | Yes (6 core) | Yes (1 core) | No (20+ deps) | Yes (5 core) | Yes (0 core) |
 
 This comparison highlights that while several mature tools exist for data validation (Great Expectations, pandera, Cerberus) and Faker provides excellent data generation capabilities, they differ in how tightly generation and validation are integrated. Both Great Expectations and pandera can drive data synthesis from validation-oriented specifications (for example, pandera's `schema.example` interface), but these workflows are typically embedded in Python code rather than in a lightweight, declarative configuration file intended to be shared across teams and CI/CD environments. ETLForge instead centers a YAML/JSON schema as the primary artifact that drives both generation *and* validation, reducing the need for parallel, hand-maintained schemas or bespoke test scripts. Great Expectations offers the most comprehensive validation features but requires substantially more dependencies, making it less suitable for very lightweight CI/CD tasks. Faker requires manual scripting to define generation patterns rather than declarative schemas. ETLForge's contribution is therefore to emphasize a configuration-first, file-based workflow that couples synthetic test-data generation and ETL validation under the same external schema, rather than to claim a capability that no other project can approximate.
@@ -54,9 +55,17 @@ This comparison highlights that while several mature tools exist for data valida
 
 ETLForge implements a dual-purpose architecture where a single YAML/JSON schema drives both data generation and validation processes for **tabular data** (pandas DataFrames). The schema format supports common data types (integer, float, string, date, category), constraints (ranges, uniqueness, nullability) and realistic data generation via Faker integration.
 
+**Schema Standards Support**: In addition to its native schema format, ETLForge supports established schema standards for improved interoperability:
+
+- **Frictionless Table Schema**: The widely-adopted standard for describing tabular data (https://specs.frictionlessdata.io/table-schema/)
+- **JSON Schema**: The popular standard for describing JSON data structures (https://json-schema.org/)
+
+Schemas in these formats are automatically detected and converted, allowing users to leverage existing schema definitions from other tools in their data ecosystem. This enhances ETLForge's integration capabilities with projects already using these established standards.
+
 **Core components:**
 - `DataGenerator`: Creates synthetic tabular datasets (pandas DataFrames) using pandas [@McKinney2010] and numpy [@Harris2020] for numerical operations
 - `DataValidator`: Validates tabular data (pandas DataFrames) against schema rules, returning detailed error reports
+- `SchemaAdapter`: Handles automatic detection and conversion of Frictionless Table Schema and JSON Schema formats
 - CLI interface: Enables command-line automation via Click [@Click2023]
 
 **Typical workflow**: ETLForge is designed to support the following pipeline:

@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
 from .exceptions import ETLForgeError
+from .schema_adapter import SchemaAdapter
 
 
 class ValidationResult:
@@ -77,38 +78,22 @@ class DataValidator:
     def load_schema(self, schema_path: Union[str, Path, dict]):
         """
         Loads a schema from a file path or a dictionary.
+        
+        The schema can be in ETLForge native format, Frictionless Table Schema,
+        or JSON Schema format. The format is auto-detected and converted to
+        ETLForge format if necessary.
 
         Args:
             schema_path: The path to a YAML/JSON schema file or a dictionary
-                containing the schema definition.
+                containing the schema definition. Supports ETLForge native format,
+                Frictionless Table Schema, and JSON Schema.
 
         Raises:
             ETLForgeError: If the schema file is not found, has an unsupported
                 format, or cannot be parsed.
         """
-        if isinstance(schema_path, dict):
-            self.schema = schema_path
-            self._validate_schema()
-            return
-
-        schema_path_obj = Path(schema_path)
-        if not schema_path_obj.exists():
-            raise ETLForgeError(f"Schema file not found at: {schema_path}")
-
-        suffix = schema_path_obj.suffix.lower()
-        try:
-            with open(schema_path_obj, "r", encoding="utf-8") as file:
-                if suffix in [".yaml", ".yml"]:
-                    loaded_schema = yaml.safe_load(file)
-                    self.schema = loaded_schema if loaded_schema is not None else {}
-                elif suffix == ".json":
-                    loaded_schema = json.load(file)
-                    self.schema = loaded_schema if loaded_schema is not None else {}
-                else:
-                    raise ETLForgeError(f"Unsupported schema file format: {suffix}")
-        except (IOError, yaml.YAMLError, json.JSONDecodeError) as e:
-            raise ETLForgeError(f"Failed to load or parse schema file: {e}") from e
-
+        # Use SchemaAdapter to load and auto-convert the schema
+        self.schema = SchemaAdapter.load_and_convert(schema_path)
         self._validate_schema()
 
     def _validate_schema(self):

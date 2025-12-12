@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/employee.schema.json",
+  "title": "Employee",
+  "description": "Schema for employee records in ETL testing",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "title": "Employee ID",
+      "description": "Unique identifier for the employee",
+      "minimum": 1,
+      "maximum": 10000000
+    },
+    "name": {
+      "type": "string",
+      "title": "Full Name",
+      "description": "Full name of the employee",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "email": {
+      "type": "string",
+      "title": "Email Address",
+      "description": "Work email address",
+      "format": "email"
+    },
+    "age": {
+      "type": "integer",
+      "title": "Age",
+      "description": "Age in years",
+      "minimum": 18,
+      "maximum": 80
+    },
+    "salary": {
+      "type": ["number", "null"],
+      "title": "Annual Salary",
+      "description": "Annual salary in USD",
+      "minimum": 30000.0,
+      "maximum": 150000.0
+    },
+    "department": {
+      "type": "string",
+      "title": "Department",
+      "description": "Department name",
+      "enum": ["Engineering", "Marketing", "Sales", "HR", "Finance"]
+    },
+    "hire_date": {
+      "type": "string",
+      "title": "Hire Date",
+      "description": "Date of hire",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "title": "Active Status",
+      "description": "Whether the employee is currently active"
+    }
+  },
+  "required": ["id", "name", "email", "age", "department", "hire_date"]
+}

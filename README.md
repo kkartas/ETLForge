@@ -35,6 +35,63 @@ A Python library for generating synthetic test data and validating ETL (Extract,
 - **Command-line interface** for quick operations
 - **Python library** for integration into existing workflows
 
+### Schema Standards Support
+ETLForge supports established schema standards for improved interoperability:
+- **[Frictionless Table Schema](https://specs.frictionlessdata.io/table-schema/)** - A widely-adopted standard for describing tabular data
+- **[JSON Schema](https://json-schema.org/)** - The popular standard for describing JSON data structures
+
+Schemas are automatically detected and converted, allowing you to use existing schema definitions from other tools.
+
+**Example with Frictionless Table Schema:**
+```python
+from etl_forge import DataGenerator, DataValidator
+
+# Use Frictionless Table Schema directly
+frictionless_schema = {
+    "fields": [
+        {"name": "id", "type": "integer", "constraints": {"required": True, "minimum": 1}},
+        {"name": "status", "type": "string", "constraints": {"enum": ["active", "inactive"]}}
+    ]
+}
+
+generator = DataGenerator(frictionless_schema)
+df = generator.generate_data(100)
+
+validator = DataValidator(frictionless_schema)
+result = validator.validate(df)
+```
+
+**Example with JSON Schema:**
+```python
+from etl_forge import DataGenerator, DataValidator
+
+# Use JSON Schema directly
+json_schema = {
+    "type": "object",
+    "properties": {
+        "user_id": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "email": {"type": "string", "format": "email"},
+        "role": {"type": "string", "enum": ["admin", "user", "guest"]}
+    },
+    "required": ["user_id", "email"]
+}
+
+generator = DataGenerator(json_schema)
+df = generator.generate_data(100)
+```
+
+You can also programmatically convert between formats:
+```python
+from etl_forge import FrictionlessAdapter, JsonSchemaAdapter
+
+# Convert ETLForge schema to Frictionless
+etl_schema = {"fields": [{"name": "id", "type": "int", "nullable": False}]}
+frictionless = FrictionlessAdapter.to_frictionless(etl_schema)
+
+# Convert ETLForge schema to JSON Schema
+json_schema = JsonSchemaAdapter.to_jsonschema(etl_schema)
+```
+
 ## Installation
 
 ### Prerequisites

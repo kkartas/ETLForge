@@ -1,0 +1,79 @@
+{
+  "fields": [
+    {
+      "name": "id",
+      "type": "integer",
+      "description": "Unique identifier for the record",
+      "constraints": {
+        "required": true,
+        "unique": true,
+        "minimum": 1,
+        "maximum": 10000000
+      }
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "description": "Full name of the person",
+      "constraints": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      }
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "description": "Email address",
+      "constraints": {
+        "required": true
+      }
+    },
+    {
+      "name": "age",
+      "type": "integer",
+      "description": "Age in years",
+      "constraints": {
+        "required": true,
+        "minimum": 18,
+        "maximum": 80
+      }
+    },
+    {
+      "name": "salary",
+      "type": "number",
+      "description": "Annual salary",
+      "constraints": {
+        "minimum": 30000.0,
+        "maximum": 150000.0
+      }
+    },
+    {
+      "name": "department",
+      "type": "string",
+      "description": "Department name",
+      "constraints": {
+        "required": true,
+        "enum": ["Engineering", "Marketing", "Sales", "HR", "Finance"]
+      }
+    },
+    {
+      "name": "hire_date",
+      "type": "date",
+      "description": "Date of hire",
+      "format": "default",
+      "constraints": {
+        "required": true,
+        "minimum": "2020-01-01",
+        "maximum": "2024-12-31"
+      }
+    },
+    {
+      "name": "is_active",
+      "type": "boolean",
+      "description": "Whether the employee is currently active"
+    }
+  ],
+  "primaryKey": ["id"],
+  "missingValues": ["", "NA", "N/A"]
+}
