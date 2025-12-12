@@ -3,6 +3,8 @@ Command-line interface for ETLForge.
 """
 
 import click
+import pandas as pd
+from pathlib import Path
 from .generator import DataGenerator
 from .validator import DataValidator
 from .exceptions import ETLForgeError
@@ -130,9 +132,25 @@ def check(input, schema, report, verbose):
         validator = DataValidator(schema)
 
         click.echo(f"Loading data from: {input}")
-        click.echo("Running validation checks...")
+        # Load data into DataFrame
+        input_path = Path(input)
+        suffix = input_path.suffix.lower()
+        if suffix == ".csv":
+            df = pd.read_csv(input_path)
+        elif suffix in [".xlsx", ".xls"]:
+            df = pd.read_excel(input_path)
+        else:
+            click.echo(
+                click.style(
+                    f"❌ Unsupported file format: {suffix}. Supported formats: .csv, .xlsx, .xls",
+                    fg="red",
+                ),
+                err=True,
+            )
+            raise click.Abort()
 
-        result = validator.validate_and_report(input, report)
+        click.echo("Running validation checks...")
+        result = validator.validate_and_report(df, report)
 
         # Print summary
         validator.print_validation_summary(result)

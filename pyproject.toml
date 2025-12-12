@@ -8,7 +8,7 @@ dynamic = ["version"]
 authors = [
   { name="Kyriakos Kartas", email="mail@kkartas.gr" },
 ]
-description = "A Python library for generating synthetic test data and validating ETL outputs."
+description = "A Python library for generating synthetic test data and validating ETL outputs for tabular data (pandas DataFrames)."
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["etl", "testing", "data validation", "synthetic data", "data quality"]

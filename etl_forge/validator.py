@@ -1,5 +1,5 @@
 """
-Data validator module for validating CSV/Excel files against schema definitions.
+Data validator module for validating tabular data (pandas DataFrames) against schema definitions.
 """
 
 import pandas as pd
@@ -7,7 +7,7 @@ import numpy as np
 import yaml
 import json
 from datetime import datetime
-from typing import Dict, Any, List, Union, Optional
+from typing import Dict, Any, List, Optional
 from pathlib import Path
 from .exceptions import ETLForgeError
 
@@ -51,10 +51,10 @@ class ValidationResult:
 
 class DataValidator:
     """
-    Validates tabular data against a declarative schema.
+    Validates tabular data (pandas DataFrames) against a declarative schema.
 
-    This class reads a schema and a data file (CSV or Excel), and then
-    performs a series of validation checks to ensure the data conforms to the
+    This class reads a schema and validates pandas DataFrames, performing
+    a series of validation checks to ensure the data conforms to the
     schema's specifications.
     """
 
@@ -161,34 +161,6 @@ class DataValidator:
                     f"Supported types: {', '.join(sorted(supported_types))}"
                 )
 
-    def load_data(self, data_path: Union[str, Path]) -> pd.DataFrame:
-        """
-        Loads data from a CSV or Excel file into a pandas DataFrame.
-
-        Args:
-            data_path: The path to the data file.
-
-        Returns:
-            A pandas DataFrame containing the loaded data.
-
-        Raises:
-            ETLForgeError: If the data file is not found, has an unsupported
-                format, or cannot be parsed by pandas.
-        """
-        data_path_obj = Path(data_path)
-        if not data_path_obj.exists():
-            raise ETLForgeError(f"Data file not found at: {data_path}")
-
-        suffix = data_path_obj.suffix.lower()
-        try:
-            if suffix == ".csv":
-                return pd.read_csv(data_path_obj)
-            elif suffix in [".xlsx", ".xls"]:
-                return pd.read_excel(data_path_obj)
-            else:
-                raise ETLForgeError(f"Unsupported data file format: {suffix}")
-        except (IOError, PermissionError, ValueError) as e:
-            raise ETLForgeError(f"Failed to load data from {data_path}: {e}") from e
 
     def _validate_column_existence(self, df: pd.DataFrame, result: ValidationResult):
         """Validate that all required columns exist."""
@@ -360,31 +332,30 @@ class DataValidator:
                         f"Value '{df.loc[idx, field_name]}' is not in allowed categories {valid_values}",
                     )
 
-    def validate(self, data_path: Union[str, Path, pd.DataFrame]) -> ValidationResult:
+    def validate(self, df: pd.DataFrame) -> ValidationResult:
         """
-        Validates data against the loaded schema.
+        Validates a pandas DataFrame against the loaded schema.
 
-        This is the main validation method. It loads the data (if a path is
-        provided) and runs all configured validation checks.
+        This is the main validation method. It runs all configured validation checks.
 
         Args:
-            data_path: The path to the data file (CSV/Excel) or a pandas
-                DataFrame that is already loaded.
+            df: A pandas DataFrame to validate.
 
         Returns:
             A `ValidationResult` object containing the detailed results of
             the validation run.
 
         Raises:
-            ETLForgeError: If no schema has been loaded.
+            ETLForgeError: If no schema has been loaded or if df is not a DataFrame.
         """
         if not self.schema:
             raise ETLForgeError("No schema loaded. Use load_schema() first.")
 
-        if isinstance(data_path, pd.DataFrame):
-            df = data_path
-        else:
-            df = self.load_data(data_path)
+        if not isinstance(df, pd.DataFrame):
+            raise ETLForgeError(
+                f"Expected pandas DataFrame, got {type(df).__name__}. "
+                "Please load your data into a DataFrame first using pd.read_csv() or pd.read_excel()."
+            )
 
         result = ValidationResult()
         result.summary["total_rows"] = len(df)
@@ -405,16 +376,15 @@ class DataValidator:
 
     def validate_and_report(
         self,
-        data_path: Union[str, Path, pd.DataFrame],
-        report_path: Optional[Union[str, Path]] = None,
+        df: pd.DataFrame,
+        report_path: Optional[str] = None,
     ) -> ValidationResult:
         """
-        Validates data and optionally saves a report of invalid rows.
+        Validates a pandas DataFrame and optionally saves a report of invalid rows.
 
         Args:
-            data_path: The path to the data file (CSV/Excel) or a pandas
-                DataFrame that is already loaded.
-            report_path: The destination file path for the invalid rows report.
+            df: A pandas DataFrame to validate.
+            report_path: The destination file path for the invalid rows report (CSV format).
                 If None, no report is saved.
 
         Returns:
@@ -423,14 +393,9 @@ class DataValidator:
         Raises:
             ETLForgeError: If an error occurs while writing the report file.
         """
-        result = self.validate(data_path)
+        result = self.validate(df)
 
         if report_path and result.invalid_rows:
-            if isinstance(data_path, pd.DataFrame):
-                df = data_path
-            else:
-                df = self.load_data(data_path)
-
             # Create report DataFrame with invalid rows and error details
             invalid_df = df.loc[result.invalid_rows].copy()
 
@@ -445,15 +410,10 @@ class DataValidator:
 
             invalid_df["validation_errors"] = error_details
 
-            # Save report
+            # Save report as CSV
             report_path_obj = Path(report_path)
             try:
-                if report_path_obj.suffix.lower() == ".csv":
-                    invalid_df.to_csv(report_path_obj, index=True)
-                elif report_path_obj.suffix.lower() in [".xlsx", ".xls"]:
-                    invalid_df.to_excel(report_path_obj, index=True)
-                else:
-                    invalid_df.to_csv(report_path_obj, index=True)
+                invalid_df.to_csv(report_path_obj, index=True)
             except (IOError, PermissionError) as e:
                 raise ETLForgeError(
                     f"Failed to save validation report to {report_path}: {e}"

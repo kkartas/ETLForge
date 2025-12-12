@@ -23,7 +23,7 @@ version: 1.0.4
 
 ## Summary
 
-ETLForge is a lightweight Python package (Python ≥ 3.9) that generates realistic synthetic test data *and* validates ETL outputs using the **same declarative schema**. One YAML/JSON file describes field types, ranges, uniqueness, nullability and optional Faker templates [@Faker2024]. The schema is consumed by two high-level components: `DataGenerator` (creates CSV/Excel datasets) and `DataValidator` (checks pipeline outputs, returning row-level error reports). A Click-based CLI [@Click2023] mirrors the library API, enabling automation within CI/CD workflows [@Fowler2013]. ETLForge therefore removes duplicated specifications and closes gaps where data-quality regressions can slip through testing cycles.
+ETLForge is a lightweight Python package (Python ≥ 3.9) that generates realistic synthetic test data *and* validates ETL outputs for **tabular data** (pandas DataFrames) using the **same declarative schema**. One YAML/JSON file describes field types, ranges, uniqueness, nullability and optional Faker templates [@Faker2024]. The schema is consumed by two high-level components: `DataGenerator` (creates CSV/Excel datasets) and `DataValidator` (checks pipeline outputs, returning row-level error reports). A Click-based CLI [@Click2023] mirrors the library API, enabling automation within CI/CD workflows [@Fowler2013]. ETLForge therefore removes duplicated specifications and closes gaps where data-quality regressions can slip through testing cycles.
 
 ## Statement of need
 
@@ -52,11 +52,11 @@ This comparison highlights that while several mature tools exist for data valida
 
 ## Software description
 
-ETLForge implements a dual-purpose architecture where a single YAML/JSON schema drives both data generation and validation processes. The schema format supports common data types (integer, float, string, date, category), constraints (ranges, uniqueness, nullability) and realistic data generation via Faker integration.
+ETLForge implements a dual-purpose architecture where a single YAML/JSON schema drives both data generation and validation processes for **tabular data** (pandas DataFrames). The schema format supports common data types (integer, float, string, date, category), constraints (ranges, uniqueness, nullability) and realistic data generation via Faker integration.
 
 **Core components:**
-- `DataGenerator`: Creates synthetic datasets using pandas [@McKinney2010] and numpy [@Harris2020] for numerical operations
-- `DataValidator`: Validates CSV/Excel files against schema rules, returning detailed error reports
+- `DataGenerator`: Creates synthetic tabular datasets (pandas DataFrames) using pandas [@McKinney2010] and numpy [@Harris2020] for numerical operations
+- `DataValidator`: Validates tabular data (pandas DataFrames) against schema rules, returning detailed error reports
 - CLI interface: Enables command-line automation via Click [@Click2023]
 
 **Typical workflow**: ETLForge is designed to support the following pipeline:
