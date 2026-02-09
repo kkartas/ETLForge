@@ -15,7 +15,7 @@ authors:
 affiliations:
   - name: Independent Researcher
     index: 1
-date: 3 December 2025
+date: 9 Februrary 2026
 bibliography: paper.bib
 paper_type: software
 version: 1.1.0
@@ -23,47 +23,33 @@ version: 1.1.0
 
 ## Summary
 
-ETLForge is a lightweight Python package (Python ≥ 3.9) that generates realistic synthetic test data *and* validates ETL outputs for **tabular data** (pandas DataFrames) using the **same declarative schema**. One YAML/JSON file describes field types, ranges, uniqueness, nullability and optional Faker templates [@Faker2024]. The schema is consumed by two high-level components: `DataGenerator` (creates CSV/Excel datasets) and `DataValidator` (checks pipeline outputs, returning row-level error reports). A Click-based CLI [@Click2023] mirrors the library API, enabling automation within CI/CD workflows [@Fowler2013]. ETLForge therefore removes duplicated specifications and closes gaps where data-quality regressions can slip through testing cycles.
+ETLForge is a Python package (Python >= 3.9) for tabular ETL testing workflows. It uses one external YAML/JSON schema to drive both synthetic data generation and validation for pandas DataFrames. The schema can describe field types, ranges, uniqueness, nullability and optional Faker templates [@Faker2024]. ETLForge provides `DataGenerator` (creates tabular test datasets) and `DataValidator` (checks datasets and returns row-level error reports). A Click-based CLI [@Click2023] and a Python API expose the same core workflow, enabling local development and CI/CD automation [@Fowler2013].
 
 ## Statement of need
 
-Extract-Transform-Load (ETL) processes are critical for data-driven organizations, but testing these pipelines remains challenging [@Kimball2013; @Kleppmann2017]. Current testing approaches suffer from a fundamental disconnect: synthetic test data generation and output validation require separate tool chains with independent schema definitions. This creates several documented problems:
+Extract-Transform-Load (ETL) processes are critical for data-driven organizations, but testing these pipelines remains challenging [@Kimball2013; @Kleppmann2017]. Teams typically need both representative synthetic inputs and deterministic validation checks. Keeping those artifacts aligned over time can be labor-intensive and can introduce drift between test setup and quality checks [@Redman2016; @Dasu2003; @Loshin2010].
 
-1. **Schema drift**: When generation schemas diverge from validation rules, tests may pass while production data fails validation [@Redman2016].
-2. **Maintenance overhead**: Duplicate schema definitions require synchronized updates, increasing development time and error potential [@Dasu2003].
-3. **Testing gaps**: Inconsistent test data may not exercise edge cases that production validation catches, leading to false confidence [@Loshin2010].
-
-Most existing libraries focus primarily on either data generation (e.g., *Faker* [@Faker2024]) or validation (e.g., *Great Expectations* [@GreatExpectations2023]). While some tools like *pandera* [@Pandera2023] support both validation and data synthesis from the same schema (for example, via example-generation APIs), they are primarily designed around programmatic, Python-centric workflows rather than a declarative, file-based schema shared between a generator and a validator. In many teams this still leads to effectively **parallel specifications** for test data and validation rules, increasing the risk of drift and missed bugs. ETLForge unifies both stages under a single source of truth, reducing maintenance effort and improving test robustness. Its small dependency footprint (six runtime packages) fits comfortably inside continuous-integration pipelines.
+This space already has mature tools. Faker focuses on synthetic value generation [@Faker2024]. Great Expectations and Cerberus focus on data validation [@GreatExpectations2023; @Cerberus2024]. pandera supports schema-based validation and can also synthesize example data from schemas [@Pandera2023]. ETLForge is positioned as a configuration-first tool for tabular workflows: one external schema file is consumed by both generator and validator, and the same workflow is available through CLI and Python interfaces.
 
 ## State of the field
 
-The landscape of data generation and validation tools shows clear specialization, with tools excelling at either generation or validation, but lacking integration between these two complementary tasks:
+The data-quality ecosystem is mature and diverse, with different projects optimizing for different workflow styles. Tools such as Great Expectations, pandera and Cerberus offer strong validation functionality, while Faker is commonly used for synthetic value generation [@GreatExpectations2023; @Pandera2023; @Cerberus2024; @Faker2024].
 
-| Capability | ETLForge | Faker | Great Expectations | pandera | Cerberus |
-|------------|----------|-------|-------------------|---------|----------|
-| Schema-driven generation | Yes | Manual scripting | No | Yes | No |
-| Schema-driven validation | Yes | No | Yes | Yes | Yes |
-| Single schema for both   | Yes | No | No | Yes | No |
-| CLI & Python API         | Both | Both | Both | Python only | Python only |
-| YAML/JSON schema support | Yes | No | Python/YAML | Python only | Python only |
-| Frictionless/JSON Schema | Yes | No | No | No | No |
-| Lightweight dependencies | Yes (6 core) | Yes (1 core) | No (20+ deps) | Yes (5 core) | Yes (0 core) |
-
-This comparison highlights that while several mature tools exist for data validation (Great Expectations, pandera, Cerberus) and Faker provides excellent data generation capabilities, they differ in how tightly generation and validation are integrated. Both Great Expectations and pandera can drive data synthesis from validation-oriented specifications (for example, pandera's `schema.example` interface), but these workflows are typically embedded in Python code rather than in a lightweight, declarative configuration file intended to be shared across teams and CI/CD environments. ETLForge instead centers a YAML/JSON schema as the primary artifact that drives both generation *and* validation, reducing the need for parallel, hand-maintained schemas or bespoke test scripts. Great Expectations offers the most comprehensive validation features but requires substantially more dependencies, making it less suitable for very lightweight CI/CD tasks. Faker requires manual scripting to define generation patterns rather than declarative schemas. ETLForge's contribution is therefore to emphasize a configuration-first, file-based workflow that couples synthetic test-data generation and ETL validation under the same external schema, rather than to claim a capability that no other project can approximate.
+ETLForge does not attempt to replace these frameworks. Its scope is narrower: tabular pandas DataFrames, declarative schema files (YAML/JSON), synthetic data generation and constraint-based validation through both CLI and Python entry points. The contribution is therefore a lightweight, configuration-first workflow that keeps generation and validation aligned under one external schema.
 
 ## Software description
 
 ETLForge implements a dual-purpose architecture where a single YAML/JSON schema drives both data generation and validation processes for **tabular data** (pandas DataFrames). The schema format supports common data types (integer, float, string, date, category), constraints (ranges, uniqueness, nullability) and realistic data generation via Faker integration.
 
-**Schema Standards Support**: In addition to its native schema format, ETLForge supports established schema standards for improved interoperability:
+**Schema standards support**: ETLForge includes adapters that detect and convert selected Frictionless Table Schema and JSON Schema definitions into ETLForge's internal tabular schema format:
 
 - **Frictionless Table Schema**: The widely-adopted standard for describing tabular data (https://specs.frictionlessdata.io/table-schema/)
 - **JSON Schema**: The popular standard for describing JSON data structures (https://json-schema.org/)
 
-Schemas in these formats are automatically detected and converted, allowing users to leverage existing schema definitions from other tools in their data ecosystem. This enhances ETLForge's integration capabilities with projects already using these established standards.
+Adapter support is intentionally limited to flat/tabular field definitions. Nested `object` or `array` structures are not supported.
 
 **Core components:**
-- `DataGenerator`: Creates synthetic tabular datasets (pandas DataFrames) using pandas [@McKinney2010] and numpy [@Harris2020] for numerical operations
+- `DataGenerator`: Creates synthetic tabular datasets (pandas DataFrames)
 - `DataValidator`: Validates tabular data (pandas DataFrames) against schema rules, returning detailed error reports
 - `SchemaAdapter`: Handles automatic detection and conversion of Frictionless Table Schema and JSON Schema formats
 - CLI interface: Enables command-line automation via Click [@Click2023]
@@ -77,34 +63,34 @@ Schemas in these formats are automatically detected and converted, allowing user
 
 This workflow demonstrates that while ETLForge generates synthetic test data, its primary value proposition is in the validation phase where real production data is checked against expected constraints. The generation capability primarily serves to create controlled test datasets for unit testing ETL transformations before production data becomes available.
 
-**Integration approach**: Rather than replacing existing tools, ETLForge complements ETL testing workflows by ensuring test data and validation rules remain synchronized. It integrates with pandas-based pipelines and exports to common formats (CSV, Excel via openpyxl). The framework targets tabular data structures, which represent the majority of ETL use cases in relational database and data warehouse environments.
+**Integration approach**: Rather than replacing existing tools, ETLForge complements ETL testing workflows by ensuring test data and validation rules remain synchronized. It integrates with pandas-based pipelines and exports to common formats (CSV, Excel via openpyxl). The framework targets tabular data structures.
 
 ## Software methodology
 
 **Data generation algorithm**: The `DataGenerator` component parses the schema specification and creates pandas DataFrames by iterating through field definitions. For each field type, it applies the appropriate generation strategy:
 
-- **Numeric fields** (int, float): Uses numpy's random number generation with specified ranges and precision constraints
+- **Numeric fields** (int, float): Uses Python's `random` module with specified ranges and precision constraints
 - **String fields**: Generates random strings or invokes Faker methods when `faker_template` is specified
-- **Date fields**: Samples dates uniformly within specified ranges using pandas datetime utilities
+- **Date fields**: Samples dates uniformly within specified ranges using Python `datetime` utilities
 - **Category fields**: Samples from predefined value sets with uniform distribution
 - **Uniqueness constraints**: Maintains sets of generated values to ensure uniqueness when required
 - **Nullability**: Applies configurable null rates to nullable fields using random sampling
 
 **Validation algorithm**: The `DataValidator` component performs multi-pass validation on input datasets:
 
-1. **Schema conformance**: Verifies all required columns exist and no unexpected columns are present
+1. **Schema conformance**: Verifies all required columns exist and reports extra columns
 2. **Type checking**: Validates each cell's data type matches schema specifications
 3. **Constraint validation**: Checks range constraints, uniqueness requirements and categorical value memberships
 4. **Null validation**: Ensures null values only appear in nullable fields
 5. **Error aggregation**: Collects all validation failures with row and column identifiers for detailed reporting
 
-The validation process short-circuits on structural errors (missing columns) but continues through all rows to provide comprehensive error reports. This design prioritizes complete feedback over early termination.
+The validation process runs all checks and aggregates all detected issues into a single report, prioritizing complete feedback over early termination.
 
-**Quality control**: GitHub Actions run comprehensive checks on Python 3.9-3.11, including unit tests achieving 77% line coverage across 587 statements, static analysis via flake8 and mypy and integration testing through end-to-end workflows. All checks complete in under 90 seconds on Ubuntu runners, supporting rapid development cycles.
+**Quality control**: GitHub Actions run checks on Python 3.9-3.11, including unit tests, static analysis via flake8 and mypy, and integration tests through end-to-end workflows.
 
 ## Performance characteristics
 
-ETLForge demonstrates suitable performance for CI/CD integration, generating 10,000 rows in approximately 6 seconds and validating 100,000 rows in approximately 2 seconds on standard hardware (Intel Core i7, 16GB RAM). These benchmarks were conducted using a representative schema containing 8 fields with varying complexity levels:
+Benchmark results included in the repository (`benchmark_results.csv`) show near-linear scaling across the tested range (1,000 to 5,000,000 rows). These benchmarks were conducted using a representative schema containing 8 fields with varying complexity levels:
 
 - 2 integer fields with range constraints (id: 1-10000000, age: 18-80)
 - 1 float field with range constraints (30000.0-150000.0) and precision specifications
@@ -112,24 +98,24 @@ ETLForge demonstrates suitable performance for CI/CD integration, generating 10,
 - 1 categorical field with 5 predefined values (Engineering, Marketing, Sales, HR and Finance)
 - 1 date field with range constraints (2020-01-01 to 2024-12-31)
 
-Performance scales approximately linearly with the number of rows and fields. Complex constraints such as uniqueness checking and Faker integration introduce additional overhead but remain within acceptable bounds for typical testing scenarios. The complete benchmark schema is available in the repository as `benchmark_schema.yaml` for reproducibility.
+Performance scales approximately linearly with the number of rows and fields. Complex constraints such as uniqueness checking and Faker integration introduce additional overhead. The complete benchmark schema is available in the repository as `benchmark_schema.yaml` for reproducibility.
 
-These performance characteristics make ETLForge suitable for integration into continuous integration pipelines where Great Expectations may be too heavyweight for simple validation tasks, though ETLForge does not compete with Great Expectations' advanced statistical capabilities.
+These results indicate that ETLForge can be integrated into CI/CD checks for tabular datasets while focusing on constraint-based validation rather than advanced statistical profiling.
 
 ## Discussion
 
-ETLForge addresses a specific gap in the ETL testing ecosystem by unifying data generation and validation under a single schema, but makes deliberate trade-offs compared to specialized tools. Unlike Great Expectations [@GreatExpectations2023], ETLForge does not provide data profiling, drift detection, or advanced statistical validations such as distributional analysis. Unlike pandera [@Pandera2023], it lacks integration with Python type checkers and advanced pandas DataFrame validation patterns, and it offers a simpler, configuration-first interface instead of pandera's rich, code-centric API for validation and example data synthesis. ETLForge prioritizes simplicity and schema consistency over advanced analytical features, making it particularly well-suited for teams that need synchronized test data generation and validation without the complexity of enterprise-grade data quality platforms.
+ETLForge unifies data generation and validation under one schema for tabular workflows, but it makes deliberate trade-offs compared with broader validation platforms. Compared with tools such as Great Expectations and pandera [@GreatExpectations2023; @Pandera2023], ETLForge emphasizes a smaller feature set centered on schema conformance, type checks, basic constraints and row-level error reporting. This narrower scope prioritizes straightforward configuration and reproducible test workflows over advanced profiling and statistical quality analysis.
 
 The framework currently has several technical limitations that constrain its applicability:
 
 - **Dataset size**: Large datasets exceeding one million rows may require memory optimization strategies, as the current implementation loads entire datasets into pandas DataFrames during validation.
-- **Nested structures**: Complex nested data structures are not supported. This limitation exists because ETLForge specifically targets tabular data formats (CSV and Excel) which are inherently flat. While YAML and JSON schema languages syntactically support nested structures, ETLForge intentionally focuses on relational and tabular ETL workflows where nested structures are less common. Future versions could support nested structures through flattening strategies or by targeting alternative output formats such as JSON documents.
+- **Nested structures**: Complex nested data structures are not supported. This limitation exists because ETLForge specifically targets tabular data formats (CSV and Excel) which are inherently flat.
 - **Statistical validation**: Advanced statistical validations (distribution testing, anomaly detection and correlation analysis) require integration with specialized tools. ETLForge provides constraint-based validation rather than statistical analysis.
 - **Custom validation logic**: While the framework validates against schema-defined constraints, it does not currently support user-defined validation functions, limiting extensibility for domain-specific validation rules.
 
 ## Availability
 
-The ETLForge source code is available on GitHub at https://github.com/kkartas/ETLForge under the MIT license. The latest release (v1.1.0) can be installed from the Python Package Index using `pip install etl-forge`, with an optional `etl-forge[faker]` installation variant for enhanced data generation capabilities. Complete documentation is hosted at https://etlforge.readthedocs.io/. The software supports Linux, macOS and Windows operating systems and is compatible with Python versions 3.9 through 3.11.
+The ETLForge source code is available on GitHub at https://github.com/kkartas/ETLForge under the MIT license. The latest release (v1.1.0) can be installed from the Python Package Index using `pip install etl-forge`, with optional extras `etl-forge[faker]` and `etl-forge[excel]`. Complete documentation is hosted at https://etlforge.readthedocs.io/. The software supports Linux, macOS and Windows operating systems and is compatible with Python versions 3.9 through 3.11.
 
 ## References
 
