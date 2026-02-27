@@ -8,7 +8,7 @@ from .validator import DataValidator
 from .exceptions import ETLForgeError
 from .schema_adapter import SchemaAdapter, FrictionlessAdapter, JsonSchemaAdapter
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 __all__ = [
     "DataGenerator",
