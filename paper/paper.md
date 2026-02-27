@@ -18,7 +18,7 @@ affiliations:
 date: 9 Februrary 2026
 bibliography: paper.bib
 paper_type: software
-version: 1.1.0
+version: 1.1.1
 ---
 
 ## Summary
@@ -115,7 +115,7 @@ The framework currently has several technical limitations that constrain its app
 
 ## Availability
 
-The ETLForge source code is available on GitHub at https://github.com/kkartas/ETLForge under the MIT license. The latest release (v1.1.0) can be installed from the Python Package Index using `pip install etl-forge`, with optional extras `etl-forge[faker]` and `etl-forge[excel]`. Complete documentation is hosted at https://etlforge.readthedocs.io/. The software supports Linux, macOS and Windows operating systems and is compatible with Python versions 3.9 through 3.11.
+The ETLForge source code is available on GitHub at https://github.com/kkartas/ETLForge under the MIT license. The latest release can be installed from the Python Package Index using `pip install etl-forge`, with optional extras `etl-forge[faker]` and `etl-forge[excel]`. Complete documentation is hosted at https://etlforge.readthedocs.io/. The software supports Linux, macOS and Windows operating systems and is compatible with Python versions 3.9 through 3.11.
 
 ## References
 
