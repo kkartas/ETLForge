@@ -29,11 +29,11 @@ ETLForge is a Python package (Python >= 3.9) for tabular ETL testing workflows. 
 
 Extract-Transform-Load (ETL) processes are critical for data-driven organizations, but testing these pipelines remains challenging [@Kimball2013; @Kleppmann2017]. Teams typically need both representative synthetic inputs and deterministic validation checks. Keeping those artifacts aligned over time can be labor-intensive and can introduce drift between test setup and quality checks [@Redman2016; @Dasu2003; @Loshin2010].
 
-This space already has mature tools. Faker focuses on synthetic value generation [@Faker2024]. Great Expectations and Cerberus focus on data validation [@GreatExpectations2023; @Cerberus2024]. pandera supports schema-based validation and can also synthesize example data from schemas [@Pandera2023]. ETLForge is positioned as a configuration-first tool for tabular workflows: one external schema file is consumed by both generator and validator, and the same workflow is available through CLI and Python interfaces.
+This space already has mature tools. Faker focuses on synthetic value generation [@Faker2024]. Great Expectations and Cerberus focus on data validation [@GreatExpectations2023; @Cerberus2024]. pandera supports schema-based validation and can also synthesize example data from schemas [@Pandera2020]. ETLForge is positioned as a configuration-first tool for tabular workflows: one external schema file is consumed by both generator and validator, and the same workflow is available through CLI and Python interfaces.
 
 ## State of the field
 
-The data-quality ecosystem is mature and diverse, with different projects optimizing for different workflow styles. Tools such as Great Expectations, pandera and Cerberus offer strong validation functionality, while Faker is commonly used for synthetic value generation [@GreatExpectations2023; @Pandera2023; @Cerberus2024; @Faker2024].
+The data-quality ecosystem is mature and diverse, with different projects optimizing for different workflow styles. Tools such as Great Expectations, pandera and Cerberus offer strong validation functionality, while Faker is commonly used for synthetic value generation [@GreatExpectations2023; @Pandera2020; @Cerberus2024; @Faker2024].
 
 ETLForge does not attempt to replace these frameworks. Its scope is narrower: tabular pandas DataFrames, declarative schema files (YAML/JSON), synthetic data generation and constraint-based validation through both CLI and Python entry points. The contribution is therefore a lightweight, configuration-first workflow that keeps generation and validation aligned under one external schema.
 
@@ -104,7 +104,7 @@ These results indicate that ETLForge can be integrated into CI/CD checks for tab
 
 ## Discussion
 
-ETLForge unifies data generation and validation under one schema for tabular workflows, but it makes deliberate trade-offs compared with broader validation platforms. Compared with tools such as Great Expectations and pandera [@GreatExpectations2023; @Pandera2023], ETLForge emphasizes a smaller feature set centered on schema conformance, type checks, basic constraints and row-level error reporting. This narrower scope prioritizes straightforward configuration and reproducible test workflows over advanced profiling and statistical quality analysis.
+ETLForge unifies data generation and validation under one schema for tabular workflows, but it makes deliberate trade-offs compared with broader validation platforms. Compared with tools such as Great Expectations and pandera [@GreatExpectations2023; @Pandera2020], ETLForge emphasizes a smaller feature set centered on schema conformance, type checks, basic constraints and row-level error reporting. This narrower scope prioritizes straightforward configuration and reproducible test workflows over advanced profiling and statistical quality analysis.
 
 The framework currently has several technical limitations that constrain its applicability:
 
@@ -118,4 +118,3 @@ The framework currently has several technical limitations that constrain its app
 The ETLForge source code is available on GitHub at https://github.com/kkartas/ETLForge under the MIT license. The latest release can be installed from the Python Package Index using `pip install etl-forge`, with optional extras `etl-forge[faker]` and `etl-forge[excel]`. Complete documentation is hosted at https://etlforge.readthedocs.io/. The software supports Linux, macOS and Windows operating systems and is compatible with Python versions 3.9 through 3.11.
 
 ## References
-
