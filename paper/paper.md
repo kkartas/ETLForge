@@ -49,6 +49,7 @@ ETLForge implements a dual-purpose architecture where a single YAML/JSON schema 
 Adapter support is intentionally limited to flat/tabular field definitions. Nested `object` or `array` structures are not supported.
 
 **Core components:**
+
 - `DataGenerator`: Creates synthetic tabular datasets (pandas DataFrames)
 - `DataValidator`: Validates tabular data (pandas DataFrames) against schema rules, returning detailed error reports
 - `SchemaAdapter`: Handles automatic detection and conversion of Frictionless Table Schema and JSON Schema formats
